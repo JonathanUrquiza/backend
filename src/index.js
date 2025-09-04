@@ -200,6 +200,138 @@ try {
     }
   });
 
+  // Endpoint para eliminar una imagen específica
+  app.delete('/delete/image', (req, res) => {
+    const { filename, zona } = req.body;
+    
+    if (!filename || !zona) {
+      return res.status(400).json({
+        success: false,
+        message: 'Faltan parámetros requeridos: filename y zona'
+      });
+    }
+    
+    try {
+      let imagePath;
+      
+      if (zona === 'sin_zona') {
+        imagePath = path.join(__dirname, 'uploads', filename);
+      } else {
+        imagePath = path.join(__dirname, 'uploads', zona, filename);
+      }
+      
+      // Verificar que el archivo existe
+      if (!fs.existsSync(imagePath)) {
+        return res.status(404).json({
+          success: false,
+          message: 'La imagen no existe'
+        });
+      }
+      
+      // Eliminar el archivo
+      fs.unlinkSync(imagePath);
+      
+      console.log(`🗑️ Imagen eliminada: ${filename} de ${zona}`);
+      
+      res.json({
+        success: true,
+        message: `Imagen ${filename} eliminada exitosamente`,
+        filename: filename,
+        zona: zona
+      });
+      
+    } catch (error) {
+      console.error('Error eliminando imagen:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error interno del servidor al eliminar la imagen'
+      });
+    }
+  });
+
+  // Endpoint para eliminar todas las imágenes de una zona
+  app.delete('/delete/zone', (req, res) => {
+    const { zona } = req.body;
+    
+    if (!zona) {
+      return res.status(400).json({
+        success: false,
+        message: 'Falta el parámetro requerido: zona'
+      });
+    }
+    
+    try {
+      let zonePath;
+      let deletedFiles = [];
+      
+      if (zona === 'sin_zona') {
+        // Eliminar imágenes en el directorio raíz
+        const uploadsDir = path.join(__dirname, 'uploads');
+        const files = fs.readdirSync(uploadsDir);
+        
+        files.forEach(file => {
+          if (/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)) {
+            const filePath = path.join(uploadsDir, file);
+            const stats = fs.statSync(filePath);
+            
+            if (stats.isFile()) {
+              fs.unlinkSync(filePath);
+              deletedFiles.push(file);
+            }
+          }
+        });
+      } else {
+        // Eliminar zona específica
+        zonePath = path.join(__dirname, 'uploads', zona);
+        
+        if (!fs.existsSync(zonePath)) {
+          return res.status(404).json({
+            success: false,
+            message: 'La zona no existe'
+          });
+        }
+        
+        const files = fs.readdirSync(zonePath);
+        
+        files.forEach(file => {
+          if (/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)) {
+            const filePath = path.join(zonePath, file);
+            fs.unlinkSync(filePath);
+            deletedFiles.push(file);
+          }
+        });
+        
+        // Eliminar el directorio si está vacío
+        try {
+          const remainingFiles = fs.readdirSync(zonePath);
+          if (remainingFiles.length === 0) {
+            fs.rmdirSync(zonePath);
+            console.log(`📁 Directorio eliminado: ${zona}`);
+          }
+        } catch (error) {
+          console.log(`⚠️ No se pudo eliminar el directorio ${zona}:`, error.message);
+        }
+      }
+      
+      console.log(`🗑️ Zona eliminada: ${zona} - ${deletedFiles.length} archivos eliminados`);
+      
+      res.json({
+        success: true,
+        message: `Zona ${zona} eliminada exitosamente. ${deletedFiles.length} imágenes eliminadas.`,
+        zona: zona,
+        deletedFiles: deletedFiles,
+        count: deletedFiles.length
+      });
+      
+    } catch (error) {
+      console.error('Error eliminando zona:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error interno del servidor al eliminar la zona'
+      });
+    }
+  });
+
 
   app.listen(port, () => {
     console.log(picocolors.green(`Server is running on port ${port}`));

@@ -71,6 +71,11 @@
             padding-bottom: 15px;
             border-bottom: 2px solid #404040;
         }
+        .zone-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
         .download-zone-btn {
             background-color: #1f4e79;
             color: white;
@@ -112,11 +117,15 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
             transition: transform 0.3s, box-shadow 0.3s;
             border: 1px solid #404040;
+            position: relative;
         }
         .image-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.6);
             border-color: #14a085;
+        }
+        .image-card:hover .delete-btn {
+            opacity: 1;
         }
         .image-card img {
             width: 100%;
@@ -235,13 +244,118 @@
                 align-items: flex-start;
                 gap: 10px;
             }
-            .download-zone-btn {
+            .zone-actions {
                 align-self: flex-end;
+                flex-wrap: wrap;
             }
             .header-buttons {
                 flex-direction: column;
                 align-items: center;
             }
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(244, 67, 54, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            opacity: 0;
+            z-index: 10;
+        }
+        .delete-btn:hover {
+            background-color: rgba(244, 67, 54, 1);
+            transform: scale(1.1);
+        }
+        
+        .delete-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+        .delete-modal-content {
+            background-color: #1e1e1e;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            color: #e0e0e0;
+        }
+        .delete-modal h3 {
+            color: #f44336;
+            margin-bottom: 20px;
+        }
+        .delete-modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .delete-confirm-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .delete-confirm-btn:hover {
+            background-color: #d32f2f;
+            transform: translateY(-1px);
+        }
+        .delete-cancel-btn {
+            background-color: #666;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .delete-cancel-btn:hover {
+            background-color: #777;
+            transform: translateY(-1px);
+        }
+        
+        .delete-zone-btn {
+            background-color: #8b2c1b;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(139, 44, 27, 0.3);
+        }
+        .delete-zone-btn:hover {
+            background-color: #a83832;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 12px rgba(139, 44, 27, 0.4);
         }
     </style>
 </head>
@@ -263,22 +377,26 @@
         
         <% Object.keys(zonesData).forEach(function(zoneKey) { %>
             <% const zone = zonesData[zoneKey]; %>
-            <div class="zone-section">
+            <div class="zone-section" data-zone-key="<%= zoneKey %>">
                 <div class="zone-header">
                     <h2 class="zone-title">
                         📁 <%= zone.displayName %> 
                         <span class="zone-count">(<%= zone.count %> <%= zone.count === 1 ? 'imagen' : 'imágenes' %>)</span>
                     </h2>
-                    <% if (zoneKey !== 'sin_zona') { %>
-                        <a href="/download/zona/<%= zoneKey %>" class="download-zone-btn">⬇️ Descargar Zona</a>
-                    <% } else { %>
-                        <a href="/download/zona/sin_zona" class="download-zone-btn">⬇️ Descargar</a>
-                    <% } %>
+                    <div class="zone-actions">
+                        <% if (zoneKey !== 'sin_zona') { %>
+                            <a href="/download/zona/<%= zoneKey %>" class="download-zone-btn">⬇️ Descargar Zona</a>
+                        <% } else { %>
+                            <a href="/download/zona/sin_zona" class="download-zone-btn">⬇️ Descargar</a>
+                        <% } %>
+                        <button class="delete-zone-btn" onclick="showDeleteZoneModal('<%= zoneKey %>', '<%= zone.displayName %>', <%= zone.count %>)">🗑️ Eliminar Todas</button>
+                    </div>
                 </div>
                 
                 <div class="gallery">
                     <% zone.images.forEach(function(image, index) { %>
-                        <div class="image-card">
+                        <div class="image-card" data-filename="<%= image.filename %>" data-zone="<%= zoneKey %>">
+                            <button class="delete-btn" onclick="showDeleteModal('<%= image.filename %>', '<%= zoneKey %>', '<%= zone.displayName %>')">🗑️</button>
                             <img src="<%= image.path %>" alt="<%= image.filename %>" onclick="openModal('<%= image.path %>', '<%= image.filename %>', '<%= zone.displayName %>', '<%= image.usuario %>')">
                             <div class="image-info">
                                 <div class="filename"><%= image.filename %></div>
@@ -316,7 +434,39 @@
         </div>
     </div>
 
+    <!-- Modal para confirmar eliminación -->
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <h3>⚠️ Confirmar Eliminación</h3>
+            <p>¿Estás seguro de que deseas eliminar esta imagen?</p>
+            <p><strong id="deleteFileName"></strong></p>
+            <p>De la <strong id="deleteZoneName"></strong></p>
+            <div class="delete-modal-buttons">
+                <button class="delete-confirm-btn" onclick="confirmDelete()">Sí, Eliminar</button>
+                <button class="delete-cancel-btn" onclick="closeDeleteModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar eliminación de zona completa -->
+    <div id="deleteZoneModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <h3>🚨 ¡ATENCIÓN! - Eliminar Zona Completa</h3>
+            <p><strong>Vas a eliminar TODAS las imágenes de:</strong></p>
+            <p style="color: #f44336; font-size: 18px; font-weight: bold;" id="deleteZoneNameFull"></p>
+            <p>Total de imágenes a eliminar: <strong style="color: #f44336;" id="deleteZoneCount"></strong></p>
+            <p style="color: #ffab00; margin-top: 15px;">⚠️ <strong>Esta acción NO se puede deshacer</strong></p>
+            <div class="delete-modal-buttons">
+                <button class="delete-confirm-btn" onclick="confirmDeleteZone()">Sí, Eliminar TODAS</button>
+                <button class="delete-cancel-btn" onclick="closeDeleteZoneModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let currentDeleteData = { filename: '', zona: '' };
+        let currentDeleteZoneData = { zona: '', zoneName: '', count: 0 };
+        
         function openModal(imageSrc, filename, zona, usuario) {
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
@@ -331,10 +481,191 @@
             modal.style.display = 'none';
         }
         
-        // Cerrar modal con tecla ESC
+        function showDeleteModal(filename, zona, zoneName) {
+            const modal = document.getElementById('deleteModal');
+            const fileNameElement = document.getElementById('deleteFileName');
+            const zoneNameElement = document.getElementById('deleteZoneName');
+            
+            currentDeleteData = { filename, zona };
+            
+            fileNameElement.textContent = filename;
+            zoneNameElement.textContent = zoneName;
+            modal.style.display = 'block';
+        }
+        
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.style.display = 'none';
+            currentDeleteData = { filename: '', zona: '' };
+        }
+        
+        function showDeleteZoneModal(zona, zoneName, count) {
+            const modal = document.getElementById('deleteZoneModal');
+            const zoneNameElement = document.getElementById('deleteZoneNameFull');
+            const zoneCountElement = document.getElementById('deleteZoneCount');
+            
+            currentDeleteZoneData = { zona, zoneName, count };
+            
+            zoneNameElement.textContent = zoneName;
+            zoneCountElement.textContent = `${count} ${count === 1 ? 'imagen' : 'imágenes'}`;
+            modal.style.display = 'block';
+        }
+        
+        function closeDeleteZoneModal() {
+            const modal = document.getElementById('deleteZoneModal');
+            modal.style.display = 'none';
+            currentDeleteZoneData = { zona: '', zoneName: '', count: 0 };
+        }
+        
+        async function confirmDelete() {
+            if (!currentDeleteData.filename || !currentDeleteData.zona) {
+                alert('Error: No hay datos de imagen para eliminar');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/delete/image', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        filename: currentDeleteData.filename,
+                        zona: currentDeleteData.zona
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Eliminar la tarjeta de imagen del DOM
+                    const imageCard = document.querySelector(`[data-filename="${currentDeleteData.filename}"][data-zone="${currentDeleteData.zona}"]`);
+                    if (imageCard) {
+                        imageCard.style.animation = 'fadeOut 0.5s ease-out';
+                        setTimeout(() => {
+                            imageCard.remove();
+                            updateGalleryStats();
+                        }, 500);
+                    }
+                    
+                    closeDeleteModal();
+                    
+                    // Mostrar mensaje de éxito
+                    showNotification('Imagen eliminada exitosamente', 'success');
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error eliminando imagen:', error);
+                alert('Error al eliminar la imagen: ' + error.message);
+            }
+        }
+        
+        function updateGalleryStats() {
+            const totalImages = document.querySelectorAll('.image-card').length;
+            const zonesWithContent = document.querySelectorAll('.zone-section').length;
+            const statsElement = document.querySelector('.stats');
+            
+            if (statsElement) {
+                statsElement.innerHTML = `📊 Total de imágenes: ${totalImages} | 📁 Zonas con contenido: ${zonesWithContent}`;
+            }
+            
+            // Si no hay más imágenes, mostrar mensaje de no imágenes
+            if (totalImages === 0) {
+                const mainContent = document.querySelector('body');
+                location.reload(); // Recargar para mostrar el mensaje de "no hay imágenes"
+            }
+        }
+        
+        async function confirmDeleteZone() {
+            if (!currentDeleteZoneData.zona) {
+                alert('Error: No hay datos de zona para eliminar');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/delete/zone', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        zona: currentDeleteZoneData.zona
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Eliminar toda la sección de zona del DOM
+                    const zoneSection = document.querySelector(`[data-zone-key="${currentDeleteZoneData.zona}"]`);
+                    if (zoneSection) {
+                        zoneSection.style.animation = 'fadeOut 0.8s ease-out';
+                        setTimeout(() => {
+                            zoneSection.remove();
+                            updateGalleryStats();
+                        }, 800);
+                    } else {
+                        // Si no encontramos por data-zone-key, buscar todas las image-cards de la zona
+                        const zoneImages = document.querySelectorAll(`[data-zone="${currentDeleteZoneData.zona}"]`);
+                        zoneImages.forEach(imageCard => {
+                            const zoneSection = imageCard.closest('.zone-section');
+                            if (zoneSection && !zoneSection.hasAttribute('data-removing')) {
+                                zoneSection.setAttribute('data-removing', 'true');
+                                zoneSection.style.animation = 'fadeOut 0.8s ease-out';
+                                setTimeout(() => {
+                                    zoneSection.remove();
+                                    updateGalleryStats();
+                                }, 800);
+                            }
+                        });
+                    }
+                    
+                    closeDeleteZoneModal();
+                    
+                    // Mostrar mensaje de éxito
+                    showNotification(`Zona ${currentDeleteZoneData.zoneName} eliminada completamente (${result.count} imágenes)`, 'success');
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error eliminando zona:', error);
+                alert('Error al eliminar la zona: ' + error.message);
+            }
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 6px;
+                color: white;
+                font-weight: bold;
+                z-index: 3000;
+                animation: slideIn 0.5s ease-out;
+                ${type === 'success' ? 'background-color: #4caf50;' : 'background-color: #f44336;'}
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.5s ease-in';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+        
+        // Cerrar modales con tecla ESC
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
+                closeDeleteModal();
+                closeDeleteZoneModal();
             }
         });
         
@@ -342,6 +673,24 @@
         document.getElementById('modalImage').addEventListener('click', function(event) {
             event.stopPropagation();
         });
+        
+        // Agregar estilos de animación
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: scale(1); }
+                to { opacity: 0; transform: scale(0.8); }
+            }
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
