@@ -1,0 +1,236 @@
+<!-- Navbar Dark Mode Reutilizable -->
+<nav class="main-navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <a href="/">
+                <span class="brand-icon">📋</span>
+                <span class="brand-text">Monolito Fiscalización</span>
+            </a>
+        </div>
+        
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <div class="navbar-links" id="navbarLinks">
+            <a href="/" class="nav-link <%= currentPage === 'home' ? 'active' : '' %>">
+                🏠 Inicio
+            </a>
+            <a href="/upload" class="nav-link <%= currentPage === 'upload' ? 'active' : '' %>">
+                📤 Cargar Imágenes
+            </a>
+            <a href="/actas/" class="nav-link <%= currentPage === 'gallery' ? 'active' : '' %>">
+                📷 Galería
+            </a>
+            <a href="/fiscales" class="nav-link <%= currentPage === 'fiscales' ? 'active' : '' %>">
+                👥 Fiscales
+            </a>
+            <a href="/contacto" class="nav-link <%= currentPage === 'contacto' ? 'active' : '' %>">
+                📞 Contacto
+            </a>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .main-navbar {
+        background-color: #1a1a1a;
+        border-bottom: 1px solid #333;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .navbar-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        height: 64px;
+    }
+
+    .navbar-brand a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 18px;
+        transition: all 0.3s;
+    }
+
+    .navbar-brand a:hover {
+        color: #14a085;
+        transform: scale(1.02);
+    }
+
+    .brand-icon {
+        font-size: 24px;
+        margin-right: 10px;
+    }
+
+    .brand-text {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: #e0e0e0;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.3s;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .nav-link:hover {
+        color: #ffffff;
+        background-color: #2a2a2a;
+        transform: translateY(-1px);
+    }
+
+    .nav-link.active {
+        color: #14a085;
+        background-color: rgba(20, 160, 133, 0.1);
+        border: 1px solid rgba(20, 160, 133, 0.3);
+    }
+
+    .nav-link.active:hover {
+        background-color: rgba(20, 160, 133, 0.2);
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        flex-direction: column;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    .mobile-menu-btn:hover {
+        background-color: #2a2a2a;
+    }
+
+    .mobile-menu-btn span {
+        width: 25px;
+        height: 3px;
+        background-color: #e0e0e0;
+        margin: 3px 0;
+        transition: 0.3s;
+        border-radius: 2px;
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 768px) {
+        .mobile-menu-btn {
+            display: flex;
+        }
+
+        .navbar-links {
+            position: fixed;
+            top: 64px;
+            left: 0;
+            width: 100%;
+            background-color: #1a1a1a;
+            border-top: 1px solid #333;
+            flex-direction: column;
+            gap: 0;
+            transform: translateY(-100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .navbar-links.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-link {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 0;
+            border-bottom: 1px solid #2a2a2a;
+            font-size: 16px;
+        }
+
+        .nav-link:last-child {
+            border-bottom: none;
+        }
+
+        .brand-text {
+            display: none;
+        }
+
+        .navbar-container {
+            padding: 0 15px;
+        }
+    }
+
+    /* Animación del menú móvil */
+    .mobile-menu-btn.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+    }
+
+    .mobile-menu-btn.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-menu-btn.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+    }
+</style>
+
+<script>
+    function toggleMobileMenu() {
+        const navbarLinks = document.getElementById('navbarLinks');
+        const mobileBtn = document.querySelector('.mobile-menu-btn');
+        
+        navbarLinks.classList.toggle('active');
+        mobileBtn.classList.toggle('active');
+    }
+
+    // Cerrar menú móvil al hacer clic en un enlace
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            const navbarLinks = document.getElementById('navbarLinks');
+            const mobileBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (navbarLinks.classList.contains('active')) {
+                navbarLinks.classList.remove('active');
+                mobileBtn.classList.remove('active');
+            }
+        });
+    });
+
+    // Cerrar menú móvil al cambiar el tamaño de ventana
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            const navbarLinks = document.getElementById('navbarLinks');
+            const mobileBtn = document.querySelector('.mobile-menu-btn');
+            
+            navbarLinks.classList.remove('active');
+            mobileBtn.classList.remove('active');
+        }
+    });
+</script>

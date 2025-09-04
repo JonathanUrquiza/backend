@@ -3,74 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <meta name="description" content="<%= view.description %>">
     <meta name="keywords" content="<%= view.keywords %>">
     <meta name="author" content="<%= view.author %>">
     <meta name="year" content="<%= view.year %>">
     <title><%= view.title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+    </style>
 </head>
 <body>
-    <% if (view.header) { %>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Monolito</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/upload">Cargar Imágenes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contacto">Contacto</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    <% } %>
+    <%- include('components/navbar', { currentPage: 'home' }) %>
 
-    <main class="container">
-        <% if (view.pageType === 'welcome' || !view.pageType) { %>
-            <!-- Página de Bienvenida -->
-            <section class="row">
-                <div class="col-12">
-                    <div class="jumbotron bg-primary text-white text-center p-5 rounded mb-4">
-                        <h1 class="display-4">¡Bienvenido!</h1>
-                        <p class="lead">Bienvenido al Monolito de Fiscalización</p>
-                        <hr class="my-4 bg-white">
-                        <p>Selecciona una opción del menú para comenzar</p>
-                        <div class="mt-3">
-                            <a class="btn btn-light btn-lg me-2" href="/upload" role="button">Cargar Imágenes</a>
-                            <a class="btn btn-outline-light btn-lg" href="/contacto" role="button">Contacto</a>
+    <main class="main-content">
+        <!-- Página de Bienvenida Dark Mode -->
+        <div class="welcome-container">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">🏛️ Monolito de Fiscalización</h1>
+                    <p class="hero-subtitle">Sistema integral para la gestión de actas e imágenes de fiscalización</p>
+                    <div class="hero-divider"></div>
+                    <p class="hero-description">
+                        Administra y organiza imágenes por zonas, descarga archivos por lotes y mantén un control total de tu proceso de fiscalización
+                    </p>
+                </div>
+                
+                <div class="action-cards">
+                    <div class="action-card">
+                        <div class="card-icon">📤</div>
+                        <h3>Cargar Imágenes</h3>
+                        <p>Sube múltiples imágenes organizadas por zona con información del usuario</p>
+                        <a href="/upload" class="card-btn primary">Cargar Ahora</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="card-icon">📷</div>
+                        <h3>Ver Galería</h3>
+                        <p>Explora, descarga y gestiona todas las imágenes organizadas por zonas</p>
+                        <a href="/actas/" class="card-btn secondary">Ver Galería</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="card-icon">👥</div>
+                        <h3>Gestión de Fiscales</h3>
+                        <p>Administra fiscales, instituciones y asignaciones de zonas</p>
+                        <a href="/fiscales" class="card-btn tertiary">Administrar</a>
+                    </div>
+                </div>
+                
+                <div class="stats-section">
+                    <div class="stat-item">
+                        <div class="stat-icon">🗂️</div>
+                        <div class="stat-text">
+                            <span class="stat-number">15</span>
+                            <span class="stat-label">Zonas Disponibles</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">📁</div>
+                        <div class="stat-text">
+                            <span class="stat-number">∞</span>
+                            <span class="stat-label">Capacidad de Almacenamiento</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-text">
+                            <span class="stat-number">10</span>
+                            <span class="stat-label">Imágenes por Lote</span>
                         </div>
                     </div>
                 </div>
-            </section>
-        <% } else if (view.pageType === 'upload' || view.pageType === 'images') { %>
-            <!-- Página de Carga de Imágenes -->
-            <%- include('imageUploadForm') %>
-        <% } else { %>
-            <!-- Página por defecto o error -->
-            <section class="row">
-                <div class="col-12">
-                    <div class="alert alert-warning text-center" role="alert">
-                        <h4 class="alert-heading">Página no encontrada</h4>
-                        <p>La página solicitada no existe o no está disponible.</p>
-                        <hr>
-                        <div class="mt-3">
-                            <a href="/" class="btn btn-primary">Ir al Inicio</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        <% } %>
+            </div>
+        </div>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .main-content {
+            min-height: calc(100vh - 64px);
+            padding: 0;
+        }
+
+        .welcome-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero-content {
+            margin-bottom: 60px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #14a085;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .hero-divider {
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #14a085, #0d7377);
+            margin: 0 auto 30px auto;
+            border-radius: 2px;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .action-card {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            border-color: #14a085;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .action-card h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .action-card p {
+            color: #b0b0b0;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .card-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid;
+        }
+
+        .card-btn.primary {
+            background-color: #0d7377;
+            color: white;
+            border-color: #0d7377;
+        }
+
+        .card-btn.primary:hover {
+            background-color: #14a085;
+            border-color: #14a085;
+            transform: translateY(-2px);
+        }
+
+        .card-btn.secondary {
+            background-color: transparent;
+            color: #14a085;
+            border-color: #14a085;
+        }
+
+        .card-btn.secondary:hover {
+            background-color: #14a085;
+            color: white;
+        }
+
+        .card-btn.tertiary {
+            background-color: transparent;
+            color: #ffa726;
+            border-color: #ffa726;
+        }
+
+        .card-btn.tertiary:hover {
+            background-color: #ffa726;
+            color: #1e1e1e;
+        }
+
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            padding: 30px;
+            background-color: rgba(20, 160, 133, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(20, 160, 133, 0.2);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+
+        .stat-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #14a085;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .welcome-container {
+                padding: 20px 15px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .action-cards {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .action-card {
+                padding: 25px;
+            }
+
+            .stats-section {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .stat-item {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .card-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </body>
 </html>

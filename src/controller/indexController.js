@@ -16,9 +16,11 @@ module.exports = {
         res.render("contacto", 
             {
                 view: {
-                    title: "Contacto",
-                    description: "Contacto de la aplicación",
-                    keywords: "Contacto, Aplicación, Monolito",
+                    title: "Contacto - Monolito Fiscalización",
+                    description: "Información de contacto del sistema de fiscalización",
+                    keywords: "Contacto, Desarrollador, Sistema, Fiscalización, Monolito",
+                    author: "Jonathan Javier Urquiza",
+                    year: new Date().getFullYear()
                 }
             }
         );
