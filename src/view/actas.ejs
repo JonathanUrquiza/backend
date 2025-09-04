@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border: 1px solid #333;
+        }
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: capitalize;
+        }
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+        select, input[type="text"] {
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #14a085;
+            box-shadow: 0 0 8px rgba(20, 160, 133, 0.4);
+        }
+        select {
+            cursor: pointer;
+        }
+        select option {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #555;
+            border-radius: 6px;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+        }
+        input[type="file"]:hover {
+            border-color: #14a085;
+            background-color: #333;
+        }
+        .submit-btn {
+            background-color: #0d7377;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(13, 115, 119, 0.3);
+        }
+        .submit-btn:hover {
+            background-color: #14a085;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(13, 115, 119, 0.4);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result.success {
+            background-color: #1d4a2a;
+            border: 1px solid #2d5a27;
+            color: #4caf50;
+        }
+        .result.error {
+            background-color: #4a1d1d;
+            border: 1px solid #5a2727;
+            color: #f44336;
+        }
+        .file-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            background-color: #2a2a2a;
+        }
+        .preview-item {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            background-color: #333;
+        }
+        .preview-item img {
+            max-width: 100%;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #555;
+        }
+        .preview-item .filename {
+            font-size: 12px;
+            margin-top: 5px;
+            word-break: break-all;
+            color: #b0b0b0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #404040;
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-bar .progress {
+            height: 100%;
+            background-color: #14a085;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><%= view.title %></h1>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a href="/actas/" style="color: #14a085; text-decoration: none; font-weight: bold; padding: 8px 16px; border: 1px solid #14a085; border-radius: 6px; transition: all 0.3s;" onmouseover="this.style.backgroundColor='#14a085'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#14a085'">
+                📷 Ver Galería de Imágenes
+            </a>
+        </div>
+        
+        <form class="upload-form" id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="zona">Zona *</label>
+                <select id="zona" name="zona" required>
+                    <option value="">Seleccionar zona...</option>
+                    <option value="zona_1">Zona 1</option>
+                    <option value="zona_2">Zona 2</option>
+                    <option value="zona_3">Zona 3</option>
+                    <option value="zona_4">Zona 4</option>
+                    <option value="zona_5">Zona 5</option>
+                    <option value="zona_6">Zona 6</option>
+                    <option value="zona_7">Zona 7</option>
+                    <option value="zona_8">Zona 8</option>
+                    <option value="zona_9">Zona 9</option>
+                    <option value="zona_10">Zona 10</option>
+                    <option value="zona_11">Zona 11</option>
+                    <option value="zona_12">Zona 12</option>
+                    <option value="zona_13">Zona 13</option>
+                    <option value="zona_14">Zona 14</option>
+                    <option value="zona_15">Zona 15</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="usuario">Nombre del usuario (opcional)</label>
+                <input type="text" id="usuario" name="usuario" placeholder="Ingrese su nombre...">
+                <small style="color: #b0b0b0; margin-top: 5px; display: block;">
+                    Este campo es opcional pero ayuda a identificar quién subió las imágenes
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label for="files">Seleccionar múltiples imágenes de actas *</label>
+                <input type="file" id="files" name="files" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp" multiple required>
+                <small style="color: #b0b0b0; margin-top: 5px; display: block;">
+                    Puedes seleccionar hasta 10 imágenes a la vez. Formatos permitidos: JPG, PNG, GIF, BMP, WebP
+                </small>
+            </div>
+            
+            <div id="filePreview" style="display: none;"></div>
+            
+            <button type="submit" class="submit-btn">Subir Imágenes</button>
+        </form>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('files');
+        const previewDiv = document.getElementById('filePreview');
+        const uploadForm = document.getElementById('uploadForm');
+        const resultDiv = document.getElementById('result');
+        
+        // Manejar la selección de archivos
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            // Validar número máximo de archivos
+            if (files.length > 10) {
+                showResult('Máximo 10 archivos permitidos', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            // Validar tipos de archivo y mostrar vista previa
+            previewFiles(files);
+        });
+        
+        // Mostrar vista previa de las imágenes
+        function previewFiles(files) {
+            previewDiv.innerHTML = '';
+            
+            if (files.length === 0) {
+                previewDiv.style.display = 'none';
+                return;
+            }
+            
+            previewDiv.style.display = 'block';
+            previewDiv.innerHTML = '<h3>Vista previa de archivos seleccionados:</h3><div class="file-preview"></div>';
+            const previewContainer = previewDiv.querySelector('.file-preview');
+            
+            files.forEach((file, index) => {
+                // Validar que sea una imagen
+                if (!file.type.startsWith('image/')) {
+                    showResult(`El archivo "${file.name}" no es una imagen válida`, 'error');
+                    return;
+                }
+                
+                // Validar tamaño (máximo 10MB por archivo)
+                if (file.size > 10 * 1024 * 1024) {
+                    showResult(`El archivo "${file.name}" es demasiado grande (máximo 10MB)`, 'error');
+                    return;
+                }
+                
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                
+                const img = document.createElement('img');
+                const fileName = document.createElement('div');
+                fileName.className = 'filename';
+                fileName.textContent = file.name;
+                
+                // Crear vista previa de la imagen
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                previewItem.appendChild(img);
+                previewItem.appendChild(fileName);
+                previewContainer.appendChild(previewItem);
+            });
+        }
+        
+        // Manejar el envío del formulario
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const files = Array.from(fileInput.files);
+            const zona = document.getElementById('zona').value;
+            const usuario = document.getElementById('usuario').value.trim();
+            
+            // Validar campos requeridos
+            if (!zona) {
+                showResult('Por favor selecciona una zona', 'error');
+                return;
+            }
+            
+            if (files.length === 0) {
+                showResult('Por favor selecciona al menos una imagen', 'error');
+                return;
+            }
+            
+            // Validaciones finales de archivos
+            const validFiles = files.filter(file => {
+                return file.type.startsWith('image/') && file.size <= 10 * 1024 * 1024;
+            });
+            
+            if (validFiles.length !== files.length) {
+                showResult('Algunos archivos no son válidos. Solo se subirán los archivos válidos.', 'error');
+            }
+            
+            if (validFiles.length === 0) {
+                showResult('No hay archivos válidos para subir', 'error');
+                return;
+            }
+            
+            // Crear FormData con todos los datos
+            const formData = new FormData();
+            formData.append('zona', zona);
+            if (usuario) {
+                formData.append('usuario', usuario);
+            }
+            
+            validFiles.forEach(file => {
+                formData.append('files', file);
+            });
+            
+            // Mostrar barra de progreso
+            showProgressBar();
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const zonaText = zona.replace('zona_', 'Zona ');
+                    const usuarioText = usuario ? ` por ${usuario}` : '';
+                    
+                    showResult(
+                        `¡Éxito! ${result.count} ${result.count === 1 ? 'imagen subida' : 'imágenes subidas'} a ${zonaText}${usuarioText}. ¡Puedes cargar más imágenes!`, 
+                        'success'
+                    );
+                    
+                    // Solo limpiar la vista previa y los archivos seleccionados, mantener zona y usuario
+                    fileInput.value = '';
+                    previewDiv.style.display = 'none';
+                    previewDiv.innerHTML = '';
+                    
+                    // Agregar enlace para ver la galería
+                    setTimeout(() => {
+                        showResult(
+                            `¡Éxito! ${result.count} ${result.count === 1 ? 'imagen subida' : 'imágenes subidas'} a ${zonaText}${usuarioText}. <a href="/actas/" style="color: #007bff; text-decoration: underline;">Ver galería</a> o continúa cargando más imágenes.`, 
+                            'success'
+                        );
+                    }, 2000);
+                } else {
+                    showResult('Error: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showResult('Error al subir las imágenes: ' + error.message, 'error');
+            } finally {
+                hideProgressBar();
+            }
+        });
+        
+        function showProgressBar() {
+            if (!document.querySelector('.progress-bar')) {
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                progressBar.innerHTML = '<div class="progress"></div>';
+                uploadForm.appendChild(progressBar);
+                
+                // Simular progreso
+                const progress = progressBar.querySelector('.progress');
+                let width = 0;
+                const interval = setInterval(() => {
+                    width += 10;
+                    progress.style.width = width + '%';
+                    if (width >= 90) clearInterval(interval);
+                }, 100);
+            }
+        }
+        
+        function hideProgressBar() {
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+                progressBar.remove();
+            }
+        }
+        
+        function showResult(message, type) {
+            resultDiv.innerHTML = message;
+            resultDiv.className = 'result ' + type;
+            resultDiv.style.display = 'block';
+            
+            // Hide after 7 seconds
+            setTimeout(() => {
+                resultDiv.style.display = 'none';
+            }, 7000);
+        }
+    </script>
+</body>
+</html>

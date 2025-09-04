@@ -20,6 +20,7 @@
   "type": "commonjs",
   "dependencies": {
     "@types/jest": "^29.5.14",
+    "archiver": "^7.0.1",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -35,7 +36,9 @@
     "nodemon": "^3.1.9",
     "pdfkit": "^0.13.0",
     "picocolors": "^1.0.0",
-    "sharp": "^0.33.5"
+    "sequelize": "^6.37.7",
+    "sharp": "^0.33.5",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "jest": "^29.7.0",

@@ -1,0 +1,31 @@
+<!-- Formulario de Carga de Imágenes -->
+<section class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Cargar Imágenes</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/upload" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="imageFile" class="form-label">Seleccionar Imagen</label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="imageTitle" class="form-label">Título de la Imagen</label>
+                            <input type="text" class="form-control" id="imageTitle" name="imageTitle" placeholder="Ingresa un título para la imagen">
+                        </div>
+                        <div class="mb-3">
+                            <label for="imageDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="imageDescription" name="imageDescription" rows="3" placeholder="Descripción de la imagen (opcional)"></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Subir Imagen</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
