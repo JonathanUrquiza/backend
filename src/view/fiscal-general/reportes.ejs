@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d68910 0%, #f39c12 50%, #e67e22 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: #5d6d7e;
+            font-size: 1.1rem;
+        }
+
+        .coming-soon {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            border: 2px solid rgba(243, 156, 18, 0.3);
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .coming-soon h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .coming-soon p {
+            color: #5d6d7e;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            background: rgba(243, 156, 18, 0.2);
+            color: #2c3e50;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(243, 156, 18, 0.3);
+            transform: translateY(-2px);
+            border-color: rgba(243, 156, 18, 0.5);
+        }
+
+        .features-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #f39c12;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .feature-description {
+            color: #5d6d7e;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">📊 Reportes Generales</h1>
+            <p class="subtitle">Sistema avanzado de informes para fiscal general: <%= fiscalGeneral.nombre %></p>
+        </div>
+
+        <div class="coming-soon">
+            <h2>🚧 Funcionalidad en Desarrollo</h2>
+            <p>Los reportes generales estarán disponibles próximamente. Como fiscal general, tendrás acceso a informes completos y análisis avanzados sobre todo el sistema de fiscalización.</p>
+            
+            <div class="nav-links">
+                <a href="/fiscal-general/dashboard" class="nav-link">🏠 Dashboard</a>
+                <a href="/fiscal-general/fiscales" class="nav-link">👥 Gestión Completa</a>
+                <a href="/fiscal-general/configuracion" class="nav-link">⚙️ Configuración</a>
+                <a href="/actas/" class="nav-link">📷 Galería</a>
+                <a href="/" class="nav-link">🌐 Sitio Principal</a>
+            </div>
+        </div>
+
+        <div class="features-preview">
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <div class="feature-title">Estadísticas Completas</div>
+                <div class="feature-description">Informes detallados sobre fiscales, zonas, instituciones y actividad general del sistema.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Análisis Avanzado</div>
+                <div class="feature-description">Gráficos interactivos, tendencias temporales y análisis predictivo de datos.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <div class="feature-title">Mapas Zonales</div>
+                <div class="feature-description">Visualización geográfica de la distribución de fiscales por zonas e instituciones.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <div class="feature-title">Auditoría Completa</div>
+                <div class="feature-description">Registros de cambios, accesos, modificaciones y actividad administrativa.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <div class="feature-title">Exportación Avanzada</div>
+                <div class="feature-description">Exportar en múltiples formatos: PDF ejecutivo, Excel detallado, CSV para análisis.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⏰</div>
+                <div class="feature-title">Reportes Programados</div>
+                <div class="feature-description">Configurar reportes automáticos diarios, semanales o mensuales por email.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

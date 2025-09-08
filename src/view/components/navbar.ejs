@@ -15,21 +15,59 @@
         </button>
         
         <div class="navbar-links" id="navbarLinks">
+            <!-- Enlaces siempre visibles (públicos) -->
             <a href="/" class="nav-link <%= currentPage === 'home' ? 'active' : '' %>">
                 🏠 Inicio
-            </a>
-            <a href="/upload" class="nav-link <%= currentPage === 'upload' ? 'active' : '' %>">
-                📤 Cargar Imágenes
-            </a>
-            <a href="/actas/" class="nav-link <%= currentPage === 'gallery' ? 'active' : '' %>">
-                📷 Galería
-            </a>
-            <a href="/fiscales" class="nav-link <%= currentPage === 'fiscales' ? 'active' : '' %>">
-                👥 Fiscales
             </a>
             <a href="/contacto" class="nav-link <%= currentPage === 'contacto' ? 'active' : '' %>">
                 📞 Contacto
             </a>
+            
+            <% if (typeof session !== 'undefined' && session && session.fiscalId) { %>
+                <!-- Enlaces para fiscales autenticados -->
+                <a href="/upload" class="nav-link <%= currentPage === 'upload' ? 'active' : '' %>">
+                    📤 Cargar Imágenes
+                </a>
+                <a href="/actas/" class="nav-link <%= currentPage === 'gallery' ? 'active' : '' %>">
+                    📷 Galería
+                </a>
+                <a href="/fiscales" class="nav-link <%= currentPage === 'fiscales' ? 'active' : '' %>">
+                    👥 Fiscales
+                </a>
+                
+                <!-- Separador -->
+                <div class="nav-separator"></div>
+                
+                <!-- Opciones de fiscal autenticado -->
+                <a href="/fiscal/dashboard" class="nav-link auth-link fiscal-dashboard-btn <%= currentPage === 'fiscal-dashboard' ? 'active' : '' %>">
+                    🏠 Mi Dashboard
+                </a>
+                <a href="/logout" class="nav-link auth-link logout-btn">
+                    🚪 Cerrar Sesión
+                </a>
+            <% } else { %>
+                <!-- Enlaces para usuarios no autenticados -->
+                
+                <!-- Separador -->
+                <div class="nav-separator"></div>
+                
+                <!-- Opciones de Autenticación -->
+                <a href="/login" class="nav-link auth-link <%= currentPage === 'login' ? 'active' : '' %>">
+                    🔐 Login Fiscal
+                </a>
+                <a href="/register" class="nav-link auth-link register-btn <%= currentPage === 'register' ? 'active' : '' %>">
+                    👤 Register
+                </a>
+                <a href="/fiscal-general/login" class="nav-link auth-link fiscal-general-btn <%= currentPage === 'fiscal-general-login' ? 'active' : '' %>">
+                    ⭐ Fiscal General
+                </a>
+                <a href="/fiscal-zona/login" class="nav-link auth-link fiscal-zona-btn <%= currentPage === 'fiscal-zona-login' ? 'active' : '' %>">
+                    🏛️ Fiscal Zona
+                </a>
+                <a href="/admin/login" class="nav-link auth-link admin-btn <%= currentPage === 'admin-login' ? 'active' : '' %>">
+                    ⚡ Admin
+                </a>
+            <% } %>
         </div>
     </div>
 </nav>
@@ -111,6 +149,122 @@
 
     .nav-link.active:hover {
         background-color: rgba(20, 160, 133, 0.2);
+    }
+
+    /* Separador visual */
+    .nav-separator {
+        width: 1px;
+        height: 30px;
+        background-color: #444;
+        margin: 0 8px;
+    }
+
+    /* Estilos especiales para enlaces de autenticación */
+    .auth-link {
+        font-weight: 600;
+    }
+
+    .register-btn {
+        background-color: #14a085;
+        color: #ffffff !important;
+        border: 1px solid #14a085;
+    }
+
+    .register-btn:hover {
+        background-color: #117a65;
+        border-color: #117a65;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(20, 160, 133, 0.3);
+    }
+
+    .register-btn.active {
+        background-color: #0d5d4f;
+        border-color: #0d5d4f;
+    }
+
+    .admin-btn {
+        background-color: #e74c3c;
+        color: #ffffff !important;
+        border: 1px solid #e74c3c;
+    }
+
+    .admin-btn:hover {
+        background-color: #c0392b;
+        border-color: #c0392b;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+
+    .admin-btn.active {
+        background-color: #a93226;
+        border-color: #a93226;
+    }
+
+    .fiscal-zona-btn {
+        background-color: #9b59b6;
+        color: #ffffff !important;
+        border: 1px solid #9b59b6;
+    }
+
+    .fiscal-zona-btn:hover {
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+    }
+
+    .fiscal-zona-btn.active {
+        background-color: #7d3c98;
+        border-color: #7d3c98;
+    }
+
+    .fiscal-general-btn {
+        background-color: #f39c12;
+        color: #ffffff !important;
+        border: 1px solid #f39c12;
+    }
+
+    .fiscal-general-btn:hover {
+        background-color: #e67e22;
+        border-color: #e67e22;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+    }
+
+    .fiscal-general-btn.active {
+        background-color: #d68910;
+        border-color: #d68910;
+    }
+
+    .fiscal-dashboard-btn {
+        background-color: #3498db;
+        color: #ffffff !important;
+        border: 1px solid #3498db;
+    }
+
+    .fiscal-dashboard-btn:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    .fiscal-dashboard-btn.active {
+        background-color: #1f5f8b;
+        border-color: #1f5f8b;
+    }
+
+    .logout-btn {
+        background-color: #95a5a6;
+        color: #ffffff !important;
+        border: 1px solid #95a5a6;
+    }
+
+    .logout-btn:hover {
+        background-color: #7f8c8d;
+        border-color: #7f8c8d;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
     }
 
     .mobile-menu-btn {

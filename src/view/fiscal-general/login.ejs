@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 50%, #d35400 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fiscal-general-login-container {
+            background-color: #1e1e1e;
+            border-radius: 15px;
+            padding: 50px 40px;
+            border: 2px solid #f39c12;
+            box-shadow: 0 15px 35px rgba(243, 156, 18, 0.3);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fiscal-general-login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f39c12, #e67e22, #f39c12);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #f39c12; }
+            to { box-shadow: 0 0 20px #f39c12, 0 0 30px #f39c12; }
+        }
+
+        .fiscal-general-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .fiscal-general-icon {
+            font-size: 4rem;
+            color: #f39c12;
+            margin-bottom: 15px;
+            display: block;
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+        }
+
+        .fiscal-general-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .fiscal-general-subtitle {
+            color: #f39c12;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .fiscal-general-warning {
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            color: #f7c531;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 18px;
+            background: #2a2a2a;
+            border: 2px solid #444;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+            background: #333;
+        }
+
+        .form-input::placeholder {
+            color: #888;
+        }
+
+        .fiscal-general-login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .fiscal-general-login-btn:hover {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(243, 156, 18, 0.4);
+        }
+
+        .fiscal-general-login-btn:active {
+            transform: translateY(0);
+        }
+
+        .fiscal-general-login-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            padding: 15px 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert.error {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #e74c3c;
+        }
+
+        .alert.success {
+            background: rgba(39, 174, 96, 0.15);
+            border: 1px solid rgba(39, 174, 96, 0.4);
+            color: #27ae60;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #444;
+        }
+
+        .form-footer a {
+            color: #f39c12;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-footer a:hover {
+            color: #e67e22;
+            text-decoration: underline;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .security-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #f39c12;
+            color: #1e1e1e;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            transform: rotate(15deg);
+            box-shadow: 0 2px 10px rgba(243, 156, 18, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .fiscal-general-login-container {
+                padding: 40px 25px;
+                margin: 20px;
+            }
+            
+            .fiscal-general-title {
+                font-size: 1.8rem;
+            }
+            
+            .fiscal-general-icon {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Efecto de partículas de fondo */
+        .fiscal-general-login-container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, transparent, transparent, rgba(243, 156, 18, 0.05));
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="fiscal-general-login-container">
+        <div class="security-badge">GENERAL</div>
+        
+        <div class="fiscal-general-header">
+            <span class="fiscal-general-icon">⭐</span>
+            <h1 class="fiscal-general-title">Fiscal General</h1>
+            <p class="fiscal-general-subtitle">Panel de Administración General</p>
+        </div>
+        
+        <div class="fiscal-general-warning">
+            ⭐ <strong>Acceso Privilegiado:</strong> Solo para fiscales generales autorizados
+        </div>
+        
+        <div class="alert" id="alert"></div>
+        
+        <form id="fiscalGeneralLoginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email de Fiscal General</label>
+                <input type="email" id="email" name="email" class="form-input" 
+                       placeholder="fiscal.general@sistema.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña de Acceso</label>
+                <input type="password" id="password" name="password" class="form-input" 
+                       placeholder="••••••••••••" required>
+            </div>
+            
+            <button type="submit" class="fiscal-general-login-btn" id="fiscalGeneralLoginBtn">
+                <span class="spinner" id="spinner"></span>
+                Acceder al Panel General
+            </button>
+        </form>
+        
+        <div class="form-footer">
+            <a href="/login">¿Eres fiscal regular? Acceder aquí</a>
+            <a href="/fiscal-zona/login">¿Eres fiscal de zona? Panel Zonal</a>
+            <a href="/admin/login">¿Eres administrador? Panel Admin</a>
+            <a href="/">← Volver al Inicio</a>
+        </div>
+    </div>
+
+    <script>
+        const fiscalGeneralLoginForm = document.getElementById('fiscalGeneralLoginForm');
+        const fiscalGeneralLoginBtn = document.getElementById('fiscalGeneralLoginBtn');
+        const spinner = document.getElementById('spinner');
+        const alert = document.getElementById('alert');
+
+        function showAlert(message, type) {
+            alert.innerHTML = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+        }
+
+        function hideAlert() {
+            alert.style.display = 'none';
+        }
+
+        fiscalGeneralLoginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const formData = new FormData(fiscalGeneralLoginForm);
+            const data = {
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            // Validación básica
+            if (!data.email || !data.password) {
+                showAlert('⚠️ Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            // Mostrar loading
+            fiscalGeneralLoginBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            fiscalGeneralLoginBtn.innerHTML = '<span class="spinner"></span>Verificando acceso general...';
+
+            try {
+                const response = await fetch('/fiscal-general/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('✅ Acceso autorizado, redirigiendo al panel general...', 'success');
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/fiscal-general/dashboard';
+                    }, 1000);
+                } else {
+                    showAlert('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('🔌 Error de conexión con el servidor', 'error');
+                console.error('Error:', error);
+            } finally {
+                // Ocultar loading
+                fiscalGeneralLoginBtn.disabled = false;
+                spinner.style.display = 'none';
+                fiscalGeneralLoginBtn.innerHTML = 'Acceder al Panel General';
+            }
+        });
+
+        // Auto-focus en el primer input
+        document.getElementById('email').focus();
+
+        // Prevenir copiar/pegar en campos sensibles (opcional)
+        document.getElementById('password').addEventListener('paste', (e) => {
+            e.preventDefault();
+            showAlert('⚠️ No se permite pegar contraseñas por seguridad', 'error');
+        });
+    </script>
+</body>
+</html>

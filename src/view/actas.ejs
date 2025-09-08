@@ -7,11 +7,17 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #121212;
             color: #e0e0e0;
+            min-height: 100vh;
+        }
+        
+        .page-content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 20px;
         }
         .container {
             background-color: #1e1e1e;
@@ -147,12 +153,34 @@
             width: 0%;
             transition: width 0.3s ease;
         }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .page-content {
+                margin: 1rem auto;
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .file-preview {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
     <%- include('components/navbar', { currentPage: 'upload' }) %>
     
-    <div class="container">
+    <div class="page-content">
+        <div class="container">
         <h1><%= view.title %></h1>
         
         <div style="text-align: center; margin-bottom: 20px;">
@@ -206,6 +234,7 @@
         </form>
         
         <div id="result" class="result"></div>
+        </div>
     </div>
 
     <script>

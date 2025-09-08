@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            color: #ecf0f1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .presente-container {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .presente-icon {
+            font-size: 4rem;
+            color: #3498db;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+
+        .presente-title {
+            font-size: 2rem;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .presente-subtitle {
+            color: #bdc3c7;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .fiscal-info {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .fiscal-name {
+            color: #ecf0f1;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .fiscal-email {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        .location-status {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .location-status h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .location-info {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .location-coordinates {
+            background: rgba(44, 62, 80, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .presente-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .presente-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .presente-btn:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #ecf0f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert.success {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid rgba(39, 174, 96, 0.5);
+            color: #2ecc71;
+        }
+
+        .alert.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+
+        .alert.info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid rgba(52, 152, 219, 0.5);
+            color: #3498db;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            margin-top: 15px;
+        }
+
+        .back-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .privacy-notice {
+            background: rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+            color: #f1c40f;
+        }
+
+        .geolocation-details {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #bdc3c7;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #ecf0f1;
+            font-family: monospace;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .presente-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .presente-title {
+                font-size: 1.6rem;
+            }
+            
+            .presente-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presente-container">
+        <div class="presente-icon">📍</div>
+        <h1 class="presente-title">Registrar Presente</h1>
+        <p class="presente-subtitle">Marca tu presente con ubicación geográfica</p>
+
+        <div class="fiscal-info">
+            <div class="fiscal-name">👤 <%= fiscal.nombre %></div>
+            <div class="fiscal-email">📧 <%= fiscal.email %></div>
+        </div>
+
+        <div class="privacy-notice">
+            🔒 <strong>Privacidad:</strong> Tu ubicación solo se usa para validar el presente y no se almacena permanentemente.
+        </div>
+
+        <div class="alert" id="alert"></div>
+
+        <div class="location-status">
+            <h3>📍 Estado de Ubicación</h3>
+            <div class="location-info" id="locationInfo">
+                Obteniendo tu ubicación actual...
+            </div>
+            <div class="geolocation-details" id="geoDetails" style="display: none;">
+                <div class="detail-item">
+                    <span class="detail-label">Latitud:</span>
+                    <span class="detail-value" id="latitude">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Longitud:</span>
+                    <span class="detail-value" id="longitude">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Precisión:</span>
+                    <span class="detail-value" id="accuracy">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Timestamp:</span>
+                    <span class="detail-value" id="timestamp">-</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="presente-btn" id="presenteBtn" disabled>
+            <span class="spinner" id="spinner"></span>
+            <span id="btnText">Obteniendo ubicación...</span>
+        </button>
+
+        <a href="/fiscal/dashboard" class="back-link">← Volver al Dashboard</a>
+    </div>
+
+    <script>
+        let currentPosition = null;
+        
+        const alertDiv = document.getElementById('alert');
+        const locationInfo = document.getElementById('locationInfo');
+        const geoDetails = document.getElementById('geoDetails');
+        const presenteBtn = document.getElementById('presenteBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+
+        function showAlert(message, type) {
+            alertDiv.innerHTML = message;
+            alertDiv.className = `alert ${type}`;
+            alertDiv.style.display = 'block';
+            
+            // Auto-hide después de 5 segundos para éxito, 10 para error
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, type === 'success' ? 5000 : 10000);
+        }
+
+        function updateLocationInfo(message, isError = false) {
+            locationInfo.innerHTML = message;
+            locationInfo.style.color = isError ? '#e74c3c' : '#bdc3c7';
+        }
+
+        function updateGeolocationDetails(position) {
+            document.getElementById('latitude').textContent = position.coords.latitude.toFixed(6);
+            document.getElementById('longitude').textContent = position.coords.longitude.toFixed(6);
+            document.getElementById('accuracy').textContent = `${Math.round(position.coords.accuracy)}m`;
+            document.getElementById('timestamp').textContent = new Date(position.timestamp).toLocaleString();
+            geoDetails.style.display = 'block';
+        }
+
+        function enablePresenteButton() {
+            presenteBtn.disabled = false;
+            btnText.textContent = 'Registrar Presente';
+            presenteBtn.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+        }
+
+        function disablePresenteButton(text) {
+            presenteBtn.disabled = true;
+            btnText.textContent = text;
+            presenteBtn.style.background = '#7f8c8d';
+        }
+
+        // Verificar soporte de geolocalización
+        if (!navigator.geolocation) {
+            updateLocationInfo('❌ Tu navegador no soporta geolocalización', true);
+            disablePresenteButton('Geolocalización no disponible');
+            showAlert('❌ Tu navegador no soporta geolocalización. Actualiza tu navegador para usar esta funcionalidad.', 'error');
+        } else {
+            // Obtener ubicación actual
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    currentPosition = position;
+                    updateLocationInfo(`✅ Ubicación obtenida con precisión de ${Math.round(position.coords.accuracy)}m`);
+                    updateGeolocationDetails(position);
+                    enablePresenteButton();
+                    
+                    console.log('Ubicación obtenida:', {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    });
+                },
+                function(error) {
+                    let errorMessage = '';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = '❌ Acceso a ubicación denegado. Por favor, permite el acceso a tu ubicación y recarga la página.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = '❌ Información de ubicación no disponible. Verifica tu conexión GPS.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = '❌ Tiempo de espera agotado. Intenta nuevamente.';
+                            break;
+                        default:
+                            errorMessage = '❌ Error desconocido obteniendo ubicación.';
+                            break;
+                    }
+                    
+                    updateLocationInfo(errorMessage, true);
+                    disablePresenteButton('Error de ubicación');
+                    showAlert(errorMessage, 'error');
+                    
+                    console.error('Error de geolocalización:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        }
+
+        // Manejar click del botón de presente
+        presenteBtn.addEventListener('click', async function() {
+            if (!currentPosition) {
+                showAlert('❌ No hay ubicación disponible. Intenta recargar la página.', 'error');
+                return;
+            }
+
+            // Mostrar loading
+            disablePresenteButton('Registrando presente...');
+            spinner.style.display = 'inline-block';
+
+            try {
+                const response = await fetch('/fiscal/presente', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        latitude: currentPosition.coords.latitude,
+                        longitude: currentPosition.coords.longitude,
+                        accuracy: currentPosition.coords.accuracy
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert(`✅ ${result.message}`, 'success');
+                    btnText.textContent = '✅ Presente Registrado';
+                    presenteBtn.style.background = '#27ae60';
+                    
+                    // Redirigir al dashboard después de 3 segundos
+                    setTimeout(() => {
+                        window.location.href = '/fiscal/dashboard';
+                    }, 3000);
+                    
+                    console.log('Presente registrado:', result.data);
+                } else {
+                    showAlert(`❌ ${result.message}`, 'error');
+                    enablePresenteButton();
+                }
+
+            } catch (error) {
+                showAlert('🔌 Error de conexión con el servidor. Intenta nuevamente.', 'error');
+                enablePresenteButton();
+                console.error('Error registrando presente:', error);
+            } finally {
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Auto-actualizar ubicación cada 30 segundos si es necesario
+        setInterval(() => {
+            if (currentPosition && (Date.now() - currentPosition.timestamp) > 30000) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        currentPosition = position;
+                        updateGeolocationDetails(position);
+                        console.log('Ubicación actualizada');
+                    },
+                    function(error) {
+                        console.warn('No se pudo actualizar ubicación:', error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 30000
+                    }
+                );
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

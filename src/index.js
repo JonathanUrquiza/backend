@@ -1,343 +1,362 @@
 const express = require("express");
+const session = require("express-session");
 const app = express();
-const cors = require("cors");
-const picocolors = require("picocolors");
 const path = require("path");
-const {auth} = require("./middlewares/auth");
+const fs = require("fs");
+const { testConnection } = require("./config/database");
+const upload = require("./middlewares/upload");
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
 
-// Configuración de EJS
+// Configuración básica
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "view"));
 
-// Middleware
+// Sesiones básicas
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'clave_secreta_basica',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        maxAge: 24 * 60 * 60 * 1000 // 24 horas
+    }
+}));
+
+// Middleware básico
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
-// Servir archivos estáticos del directorio uploads y sus subdirectorios
+// Servir archivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Importar rutas básicas
+const authRouter = require("./routes/authRouter");
+const adminRouter = require("./routes/adminRouter");
+const fiscalZonaRouter = require("./routes/fiscalZonaRouter");
+const fiscalGeneralRouter = require("./routes/fiscalGeneralRouter");
+const fiscalRouter = require("./routes/fiscalRouter");
 
-const indexRouter = require("./routes/indexRouter");
-const registerRouter = require("./routes/registerRouter");
-const fiscalizacionRouter = require("./routes/fiscalizacionRouter");
-const actasRouter = require("./routes/actasRouter");
-const { actas } = require("./controller/actasController");
-const upload = require("./middlewares/upload");
-const archiver = require('archiver');
-const fs = require('fs');
+// Middleware de autenticación simple
+const requireAuth = (req, res, next) => {
+    if (req.session.fiscalId) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+};
 
+// Rutas básicas
+app.use('/', authRouter);
+app.use('/admin', adminRouter);
+app.use('/fiscal-zona', fiscalZonaRouter);
+app.use('/fiscal-general', fiscalGeneralRouter);
+app.use('/fiscal', fiscalRouter);
 
+// Ruta de inicio (usa el diseño original)
+app.get('/', (req, res) => {
+    res.render('index', {
+        view: {
+            title: "Monolito Fiscalización - Sistema Integral",
+            description: "Sistema integral para la gestión de actas e imágenes de fiscalización",
+            keywords: "fiscalización, actas, imágenes, gestión",
+            author: "Jonathan Javier Urquiza",
+            year: new Date().getFullYear()
+        },
+        session: req.session // Pasar información de sesión para la navbar
+    });
+});
 
+// Ruta de contacto
+app.get('/contacto', (req, res) => {
+    res.render('contacto', {
+        view: {
+            title: "Contacto - Monolito Fiscalización",
+            description: "Información de contacto del sistema",
+            keywords: "contacto, soporte, desarrollador",
+            author: "Jonathan Javier Urquiza",
+            year: new Date().getFullYear()
+        },
+        session: req.session // Pasar información de sesión para la navbar
+    });
+});
 
-try {
-  
- 
-  app.use('/', indexRouter);
-  app.use('/registro', registerRouter);
-  //app.use('/login', auth, authRouter);
-  app.use('/fiscales', fiscalizacionRouter);
-  //app.use('/presentismo', auth, controlRouter);
-  app.use('/actas', actasRouter);
-  //app.use('/presentismo', auth, controlRouter);
-  
-  // Rutas para el formulario de carga en /upload
-  app.get('/upload', actas);
-  app.post('/upload', upload.array('files', 10), (req, res) => {
-    // Handle multiple file upload with zone and user info
+// Ruta para cargar imágenes (página de carga) - SOLO FISCALES AUTENTICADOS
+app.get('/upload', requireAuth, (req, res) => {
+    res.render('actas', {
+        view: {
+            title: "Cargar Nuevas Imágenes de Actas - Monolito Fiscalización",
+            description: "Sube múltiples imágenes organizadas por zona",
+            keywords: "upload, imágenes, actas, fiscalización",
+            author: "Jonathan Javier Urquiza",
+            year: new Date().getFullYear()
+        },
+        session: req.session // Pasar información de sesión para la navbar
+    });
+});
+
+// Ruta POST para procesar la carga de imágenes - SOLO FISCALES AUTENTICADOS
+app.post('/upload', requireAuth, upload.array('files', 10), (req, res) => {
     try {
-        if (req.files && req.files.length > 0) {
-            const zona = req.body.zona;
-            const usuario = req.body.usuario || 'Anónimo';
-            
-            const uploadedFiles = req.files.map(file => ({
+        const { zona, usuario } = req.body;
+        const files = req.files;
+        
+        if (!zona || !files || files.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Faltan datos requeridos (zona e imágenes)'
+            });
+        }
+
+        console.log(`📁 Subidas ${files.length} imágenes a ${zona} por ${usuario || 'Anónimo'}`);
+        
+        res.json({
+            success: true,
+            message: `${files.length} imagen${files.length > 1 ? 'es' : ''} subida${files.length > 1 ? 's' : ''} exitosamente`,
+            count: files.length,
+            zona: zona,
+            usuario: usuario || 'Anónimo',
+            files: files.map(file => ({
                 filename: file.filename,
                 originalname: file.originalname,
                 size: file.size,
-                mimetype: file.mimetype,
-                zona: zona,
-                usuario: usuario,
-                path: file.path
-            }));
-            
-            console.log(`✅ ${req.files.length} archivos subidos a ${zona} por ${usuario}`);
-            
-            res.json({ 
-                success: true, 
-                message: `${req.files.length} archivos subidos exitosamente a ${zona.replace('zona_', 'Zona ')}`,
-                files: uploadedFiles,
-                count: req.files.length,
-                zona: zona,
-                usuario: usuario
-            });
-        } else {
-            res.status(400).json({ 
-                success: false, 
-                message: 'No se subieron archivos' 
-            });
-        }
+                path: `/uploads/${zona}/${file.filename}`
+            }))
+        });
+        
     } catch (error) {
-        console.error('Error al subir archivos:', error);
-        res.status(500).json({ 
-            success: false, 
+        console.error('Error al subir imágenes:', error);
+        res.status(500).json({
+            success: false,
             message: 'Error interno del servidor: ' + error.message
         });
     }
-  });
+});
 
-  // Endpoint para descargar todas las imágenes
-  app.get('/download/all', (req, res) => {
+// Ruta para la galería de imágenes - SOLO FISCALES AUTENTICADOS
+app.get('/actas/', requireAuth, (req, res) => {
     const uploadsDir = path.join(__dirname, 'uploads');
-    const zipName = `actas_todas_${new Date().toISOString().split('T')[0]}.zip`;
     
-    res.attachment(zipName);
-    
-    const archive = archiver('zip', {
-      zlib: { level: 9 } // máxima compresión
-    });
-    
-    archive.on('error', (err) => {
-      console.error('Error creando ZIP:', err);
-      res.status(500).send('Error al crear el archivo ZIP');
-    });
-    
-    archive.pipe(res);
+    let zonesData = {};
+    let totalImages = 0;
     
     try {
-      // Agregar todas las imágenes de todas las zonas
-      const items = fs.readdirSync(uploadsDir, { withFileTypes: true });
-      
-      items.forEach(item => {
-        if (item.isDirectory() && item.name.startsWith('zona_')) {
-          const zonePath = path.join(uploadsDir, item.name);
-          const zoneFiles = fs.readdirSync(zonePath);
-          
-          zoneFiles.forEach(file => {
-            if (/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)) {
-              const filePath = path.join(zonePath, file);
-              archive.file(filePath, { name: `${item.name}/${file}` });
-            }
-          });
-        } else if (item.isFile() && /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(item.name)) {
-          // Imágenes en el directorio raíz (sin zona)
-          const filePath = path.join(uploadsDir, item.name);
-          archive.file(filePath, { name: `sin_zona/${item.name}` });
+        // Crear directorio uploads si no existe
+        if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
         }
-      });
-      
-      archive.finalize();
-    } catch (error) {
-      console.error('Error leyendo directorio:', error);
-      res.status(500).send('Error al acceder a las imágenes');
-    }
-  });
 
-  // Endpoint para descargar imágenes de una zona específica
-  app.get('/download/zona/:zona', (req, res) => {
-    const zona = req.params.zona;
-    const zipName = `actas_${zona}_${new Date().toISOString().split('T')[0]}.zip`;
-    
-    res.attachment(zipName);
-    
-    const archive = archiver('zip', {
-      zlib: { level: 9 }
-    });
-    
-    archive.on('error', (err) => {
-      console.error('Error creando ZIP:', err);
-      res.status(500).send('Error al crear el archivo ZIP');
-    });
-    
-    archive.pipe(res);
-    
-    try {
-      let files = [];
-      
-      if (zona === 'sin_zona') {
-        // Manejar imágenes en el directorio raíz
-        const uploadsDir = path.join(__dirname, 'uploads');
-        const rootFiles = fs.readdirSync(uploadsDir);
+        // Leer todas las carpetas de zonas
+        const items = fs.readdirSync(uploadsDir, { withFileTypes: true });
         
-        files = rootFiles
-          .filter(file => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file))
-          .map(file => ({
-            filePath: path.join(uploadsDir, file),
-            name: file
-          }));
-      } else {
-        // Manejar zona específica
+        items.forEach(item => {
+            if (item.isDirectory() && item.name.startsWith('zona_')) {
+                const zonePath = path.join(uploadsDir, item.name);
+                const zoneFiles = fs.readdirSync(zonePath);
+                
+                const images = zoneFiles
+                    .filter(file => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file))
+                    .map(file => {
+                        const filePath = path.join(zonePath, file);
+                        const stats = fs.statSync(filePath);
+                        
+                        // Extraer información del nombre del archivo
+                        const parts = file.split('_');
+                        let usuario = 'Anónimo';
+                        
+                        if (parts.length >= 3) {
+                            // El formato es: timestamp_usuario_nombreoriginal.ext
+                            usuario = parts[1] || 'Anónimo';
+                        }
+                        
+                        return {
+                            filename: file,
+                            path: `/uploads/${item.name}/${file}`,
+                            uploadedAt: stats.mtime,
+                            usuario: usuario.replace(/_/g, ' ')
+                        };
+                    })
+                    .sort((a, b) => b.uploadedAt - a.uploadedAt); // Más recientes primero
+                
+                if (images.length > 0) {
+                    zonesData[item.name] = {
+                        displayName: item.name.replace('zona_', 'Zona '),
+                        images: images,
+                        count: images.length
+                    };
+                    totalImages += images.length;
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.log('Error al leer directorio uploads:', error.message);
+    }
+    
+    res.render('gallery', {
+        view: {
+            title: "Galería de Imágenes por Zona - Monolito Fiscalización",
+            description: "Explora y gestiona todas las imágenes organizadas por zonas",
+            keywords: "galería, imágenes, actas, zonas",
+            author: "Jonathan Javier Urquiza",
+            year: new Date().getFullYear()
+        },
+        zonesData: zonesData,
+        totalImages: totalImages,
+        session: req.session // Pasar información de sesión para la navbar
+    });
+});
+
+// Ruta para eliminar una imagen individual - SOLO FISCALES AUTENTICADOS
+app.delete('/delete/image', requireAuth, (req, res) => {
+    try {
+        const { filename, zona } = req.body;
+        
+        if (!filename || !zona) {
+            return res.status(400).json({
+                success: false,
+                message: 'Faltan parámetros (filename, zona)'
+            });
+        }
+
+        const filePath = path.join(__dirname, 'uploads', zona, filename);
+        
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            console.log(`🗑️ Imagen eliminada: ${filename} de ${zona}`);
+            
+            res.json({
+                success: true,
+                message: 'Imagen eliminada exitosamente'
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'Imagen no encontrada'
+            });
+        }
+        
+    } catch (error) {
+        console.error('Error eliminando imagen:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor'
+        });
+    }
+});
+
+// Ruta para eliminar todas las imágenes de una zona - SOLO FISCALES AUTENTICADOS
+app.delete('/delete/zone', requireAuth, (req, res) => {
+    try {
+        const { zona } = req.body;
+        
+        if (!zona) {
+            return res.status(400).json({
+                success: false,
+                message: 'Falta parámetro zona'
+            });
+        }
+
         const zonePath = path.join(__dirname, 'uploads', zona);
         
-        if (!fs.existsSync(zonePath)) {
-          return res.status(404).send('Zona no encontrada');
-        }
-        
-        const zoneFiles = fs.readdirSync(zonePath);
-        
-        files = zoneFiles
-          .filter(file => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file))
-          .map(file => ({
-            filePath: path.join(zonePath, file),
-            name: file
-          }));
-      }
-      
-      if (files.length === 0) {
-        return res.status(404).send('No hay imágenes en esta zona');
-      }
-      
-      files.forEach(file => {
-        archive.file(file.filePath, { name: file.name });
-      });
-      
-      archive.finalize();
-    } catch (error) {
-      console.error('Error leyendo zona:', error);
-      res.status(500).send('Error al acceder a las imágenes de la zona');
-    }
-  });
-
-  // Endpoint para eliminar una imagen específica
-  app.delete('/delete/image', (req, res) => {
-    const { filename, zona } = req.body;
-    
-    if (!filename || !zona) {
-      return res.status(400).json({
-        success: false,
-        message: 'Faltan parámetros requeridos: filename y zona'
-      });
-    }
-    
-    try {
-      let imagePath;
-      
-      if (zona === 'sin_zona') {
-        imagePath = path.join(__dirname, 'uploads', filename);
-      } else {
-        imagePath = path.join(__dirname, 'uploads', zona, filename);
-      }
-      
-      // Verificar que el archivo existe
-      if (!fs.existsSync(imagePath)) {
-        return res.status(404).json({
-          success: false,
-          message: 'La imagen no existe'
-        });
-      }
-      
-      // Eliminar el archivo
-      fs.unlinkSync(imagePath);
-      
-      console.log(`🗑️ Imagen eliminada: ${filename} de ${zona}`);
-      
-      res.json({
-        success: true,
-        message: `Imagen ${filename} eliminada exitosamente`,
-        filename: filename,
-        zona: zona
-      });
-      
-    } catch (error) {
-      console.error('Error eliminando imagen:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Error interno del servidor al eliminar la imagen'
-      });
-    }
-  });
-
-  // Endpoint para eliminar todas las imágenes de una zona
-  app.delete('/delete/zone', (req, res) => {
-    const { zona } = req.body;
-    
-    if (!zona) {
-      return res.status(400).json({
-        success: false,
-        message: 'Falta el parámetro requerido: zona'
-      });
-    }
-    
-    try {
-      let zonePath;
-      let deletedFiles = [];
-      
-      if (zona === 'sin_zona') {
-        // Eliminar imágenes en el directorio raíz
-        const uploadsDir = path.join(__dirname, 'uploads');
-        const files = fs.readdirSync(uploadsDir);
-        
-        files.forEach(file => {
-          if (/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)) {
-            const filePath = path.join(uploadsDir, file);
-            const stats = fs.statSync(filePath);
+        if (fs.existsSync(zonePath)) {
+            const files = fs.readdirSync(zonePath);
+            const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file));
             
-            if (stats.isFile()) {
-              fs.unlinkSync(filePath);
-              deletedFiles.push(file);
-            }
-          }
-        });
-      } else {
-        // Eliminar zona específica
-        zonePath = path.join(__dirname, 'uploads', zona);
-        
-        if (!fs.existsSync(zonePath)) {
-          return res.status(404).json({
-            success: false,
-            message: 'La zona no existe'
-          });
+            imageFiles.forEach(file => {
+                const filePath = path.join(zonePath, file);
+                fs.unlinkSync(filePath);
+            });
+            
+            console.log(`🗑️ Eliminadas ${imageFiles.length} imágenes de ${zona}`);
+            
+            res.json({
+                success: true,
+                message: `${imageFiles.length} imágenes eliminadas de ${zona}`,
+                count: imageFiles.length
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'Zona no encontrada'
+            });
         }
         
-        const files = fs.readdirSync(zonePath);
-        
-        files.forEach(file => {
-          if (/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(file)) {
-            const filePath = path.join(zonePath, file);
-            fs.unlinkSync(filePath);
-            deletedFiles.push(file);
-          }
-        });
-        
-        // Eliminar el directorio si está vacío
-        try {
-          const remainingFiles = fs.readdirSync(zonePath);
-          if (remainingFiles.length === 0) {
-            fs.rmdirSync(zonePath);
-            console.log(`📁 Directorio eliminado: ${zona}`);
-          }
-        } catch (error) {
-          console.log(`⚠️ No se pudo eliminar el directorio ${zona}:`, error.message);
-        }
-      }
-      
-      console.log(`🗑️ Zona eliminada: ${zona} - ${deletedFiles.length} archivos eliminados`);
-      
-      res.json({
-        success: true,
-        message: `Zona ${zona} eliminada exitosamente. ${deletedFiles.length} imágenes eliminadas.`,
-        zona: zona,
-        deletedFiles: deletedFiles,
-        count: deletedFiles.length
-      });
-      
     } catch (error) {
-      console.error('Error eliminando zona:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Error interno del servidor al eliminar la zona'
-      });
+        console.error('Error eliminando zona:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor'
+        });
     }
-  });
+});
 
+// Ruta para descargar todas las imágenes (placeholder)
+app.get('/download/all', (req, res) => {
+    res.status(501).json({
+        success: false,
+        message: 'Función de descarga masiva aún no implementada'
+    });
+});
 
-  app.listen(port, () => {
-    console.log(picocolors.green(`Server is running on port ${port}`));
-    console.log(picocolors.green(`http://127.0.0.1:${port}`));
-  });
-} catch (error) {
-  console.log(picocolors.red(`Error: ${error}`));
+// Ruta para descargar imágenes por zona (placeholder)
+app.get('/download/zona/:zona', (req, res) => {
+    const { zona } = req.params;
+    res.status(501).json({
+        success: false,
+        message: `Función de descarga para ${zona} aún no implementada`
+    });
+});
+
+app.get('/fiscales', requireAuth, (req, res) => {
+    res.render('placeholder', {
+        view: {
+            title: "Información de Fiscales - Sistema",
+            description: "Información general del sistema de fiscales",
+            keywords: "fiscales, información, sistema",
+            author: "Jonathan Javier Urquiza",
+            year: new Date().getFullYear()
+        },
+        page: {
+            title: "👥 Información de Fiscales",
+            subtitle: "Solo para fiscales autenticados",
+            description: "Accede a tu dashboard de fiscal para ver información detallada, subir fotos y gestionar tu actividad de fiscalización.",
+            backLink: "/fiscal/dashboard",
+            backText: "Ir a Mi Dashboard"
+        },
+        session: req.session // Pasar información de sesión para la navbar
+    });
+});
+
+// Error 404
+app.use((req, res) => {
+    res.status(404).send('<h1>Página no encontrada</h1><a href="/login">Ir al login</a>');
+});
+
+// Inicializar servidor
+async function startServer() {
+    try {
+        console.log("🚀 Iniciando servidor básico...");
+        
+        // Probar conexión
+        await testConnection();
+        
+        app.listen(port, () => {
+            console.log(`✅ Servidor funcionando en puerto ${port}`);
+            console.log(`🌐 http://localhost:${port}`);
+            console.log("🚀 Funcionalidades disponibles:");
+            console.log("  📝 Login/Register de fiscales");
+            console.log("  📤 Carga de imágenes por zonas");
+            console.log("  📷 Galería de imágenes organizada");
+            console.log("  🗑️ Eliminación de imágenes individual/masiva");
+            console.log(`📁 Directorio de uploads: ${path.join(__dirname, 'uploads')}`);
+        });
+
+    } catch (error) {
+        console.error("❌ Error iniciando servidor:", error);
+        process.exit(1);
+    }
 }
 
+startServer();

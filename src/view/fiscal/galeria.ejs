@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            color: #ecf0f1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+        }
+
+        .fiscal-info {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.1));
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .fiscal-info h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .fiscal-info p {
+            color: #bdc3c7;
+            font-size: 1rem;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(52, 73, 94, 0.8));
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .no-photos {
+            background: rgba(241, 196, 15, 0.1);
+            border: 2px solid rgba(241, 196, 15, 0.3);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .no-photos h3 {
+            color: #f1c40f;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .no-photos p {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .zone-section {
+            margin-bottom: 3rem;
+        }
+
+        .zone-header {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(41, 128, 185, 0.2));
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            border-bottom: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .zone-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .zone-count {
+            background: rgba(52, 152, 219, 0.3);
+            color: #ecf0f1;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(52, 73, 94, 0.8));
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .photo-card {
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        .photo-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:hover .photo-img {
+            transform: scale(1.05);
+        }
+
+        .photo-info {
+            padding: 1rem;
+        }
+
+        .photo-filename {
+            color: #ecf0f1;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+
+        .photo-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #bdc3c7;
+            font-size: 0.8rem;
+        }
+
+        .photo-date {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .photo-zone {
+            background: rgba(52, 152, 219, 0.3);
+            color: #3498db;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Modal para vista completa */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .modal-img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .modal-info {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
+            padding: 1.5rem;
+            border-radius: 0 0 12px 12px;
+            color: #ecf0f1;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: #ecf0f1;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: rgba(231, 76, 60, 0.8);
+            transform: scale(1.1);
+        }
+
+        .actions-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(52, 152, 219, 0.3);
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .photos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .zone-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .actions-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">📷 Mis Fotos</h1>
+            <p class="subtitle">Galería personal de imágenes subidas</p>
+        </div>
+
+        <div class="fiscal-info">
+            <h3>👤 <%= fiscal.nombre %></h3>
+            <p>Zona <%= fiscal.zona %> | Todas las fotos que has subido al sistema</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number"><%= totalPhotos %></div>
+                <div class="stat-label">Total Fotos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><%= Object.keys(fiscalPhotos).length %></div>
+                <div class="stat-label">Zonas con Fotos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><%= fiscal.zona %></div>
+                <div class="stat-label">Tu Zona</div>
+            </div>
+        </div>
+
+        <% if (totalPhotos === 0) { %>
+        <div class="no-photos">
+            <h3>📷 Sin Fotos Aún</h3>
+            <p>No has subido ninguna foto al sistema. ¡Comienza a documentar las actas de tu institución!</p>
+            <a href="/upload" class="upload-btn">
+                📤 Subir Primera Foto
+            </a>
+        </div>
+        <% } else { %>
+            <% Object.entries(fiscalPhotos).forEach(([zoneKey, zoneData]) => { %>
+            <div class="zone-section">
+                <div class="zone-header">
+                    <h2 class="zone-title">📍 <%= zoneData.displayName %></h2>
+                    <span class="zone-count"><%= zoneData.count %> foto<%= zoneData.count !== 1 ? 's' : '' %></span>
+                </div>
+                
+                <div class="photos-grid">
+                    <% zoneData.photos.forEach(photo => { %>
+                    <div class="photo-card" onclick="openModal('<%= photo.path %>', '<%= photo.filename %>', '<%= photo.zona %>', '<%= photo.uploadedAt.toLocaleString() %>')">
+                        <img src="<%= photo.path %>" alt="<%= photo.filename %>" class="photo-img" 
+                             onerror="this.src='/uploads/placeholder.png'">
+                        <div class="photo-info">
+                            <div class="photo-filename"><%= photo.filename %></div>
+                            <div class="photo-meta">
+                                <div class="photo-date">
+                                    <span>🕐</span>
+                                    <%= photo.uploadedAt.toLocaleDateString() %>
+                                </div>
+                                <div class="photo-zone"><%= photo.zona %></div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+            <% }); %>
+        <% } %>
+
+        <div class="actions-bar">
+            <a href="/fiscal/dashboard" class="btn btn-secondary">
+                <span>🏠</span>
+                Dashboard
+            </a>
+            <a href="/upload" class="btn btn-primary">
+                <span>📤</span>
+                Subir Más Fotos
+            </a>
+            <a href="/actas/" class="btn btn-secondary">
+                <span>🖼️</span>
+                Galería General
+            </a>
+            <a href="/fiscal/presente" class="btn btn-secondary">
+                <span>📍</span>
+                Registrar Presente
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal para vista completa -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img id="modalImg" class="modal-img" alt="Foto completa">
+            <div class="modal-info">
+                <h3 id="modalFilename"></h3>
+                <p><strong>Zona:</strong> <span id="modalZone"></span></p>
+                <p><strong>Fecha:</strong> <span id="modalDate"></span></p>
+                <p><strong>Subido por:</strong> <%= fiscal.nombre %></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Log información para debugging
+        console.log('Galería personal cargada para:', '<%= fiscal.nombre %>');
+        console.log('Total de fotos:', '<%= totalPhotos %>');
+        console.log('Zonas con fotos:', <%= JSON.stringify(Object.keys(fiscalPhotos)) %>);
+
+        // Función para abrir modal
+        function openModal(imagePath, filename, zona, fecha) {
+            const modal = document.getElementById('photoModal');
+            const modalImg = document.getElementById('modalImg');
+            const modalFilename = document.getElementById('modalFilename');
+            const modalZone = document.getElementById('modalZone');
+            const modalDate = document.getElementById('modalDate');
+            
+            modal.style.display = 'block';
+            modalImg.src = imagePath;
+            modalFilename.textContent = filename;
+            modalZone.textContent = zona;
+            modalDate.textContent = fecha;
+            
+            // Prevenir scroll del body
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Función para cerrar modal
+        function closeModal() {
+            const modal = document.getElementById('photoModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal al hacer clic fuera de la imagen
+        document.getElementById('photoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Cerrar modal con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Animación de entrada para las cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.photo-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.3s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+        });
+
+        // Lazy loading para imágenes
+        const images = document.querySelectorAll('.photo-img');
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.style.opacity = '1';
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => {
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease';
+            imageObserver.observe(img);
+        });
+    </script>
+</body>
+</html>

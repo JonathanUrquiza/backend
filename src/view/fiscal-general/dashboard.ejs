@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d68910 0%, #f39c12 50%, #e67e22 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+        }
+
+        /* Header Fiscal General */
+        .fiscal-general-header {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border-bottom: 3px solid #d68910;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .fiscal-general-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .fiscal-general-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .fiscal-general-logo {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-shadow: 0 0 20px rgba(44, 62, 80, 0.3);
+        }
+
+        .fiscal-general-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .fiscal-general-subtitle {
+            color: #34495e;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .fiscal-general-user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .fiscal-general-welcome {
+            text-align: right;
+        }
+
+        .fiscal-general-name {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .fiscal-general-details {
+            color: #34495e;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        .fiscal-general-institution {
+            color: #2c3e50;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding: 3px 8px;
+            background: rgba(44, 62, 80, 0.2);
+            border-radius: 12px;
+            margin-top: 3px;
+        }
+
+        .fiscal-general-logout-btn {
+            background: linear-gradient(135deg, #d68910, #ca6f1e);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .fiscal-general-logout-btn:hover {
+            background: linear-gradient(135deg, #ca6f1e, #b7670f);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(214, 137, 16, 0.4);
+        }
+
+        /* Main Content */
+        .fiscal-general-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .fiscal-general-dashboard-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dashboard-subtitle {
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid rgba(243, 156, 18, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-card:hover {
+            border-color: rgba(243, 156, 18, 0.6);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f39c12, #e67e22, #f39c12);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            color: #f39c12;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #5d6d7e;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .stat-change.positive {
+            color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        /* Zone Stats */
+        .zone-stats {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border-top: 4px solid #f39c12;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .zone-stats h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .zone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .zone-item {
+            background: rgba(243, 156, 18, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .zone-item:hover {
+            background: rgba(243, 156, 18, 0.2);
+            transform: scale(1.05);
+        }
+
+        .zone-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f39c12;
+            margin-bottom: 0.5rem;
+        }
+
+        .zone-count {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .action-card:hover {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(230, 126, 34, 0.1));
+            border-color: rgba(243, 156, 18, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            color: #f39c12;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .action-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            font-size: 0.9rem;
+            color: #5d6d7e;
+            line-height: 1.4;
+        }
+
+        /* Authority Highlight */
+        .authority-highlight {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(230, 126, 34, 0.2));
+            border: 2px solid rgba(243, 156, 18, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .authority-highlight h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .authority-highlight p {
+            color: #5d6d7e;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .fiscal-general-header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .fiscal-general-user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .fiscal-general-main {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .zone-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fiscal General Header -->
+    <header class="fiscal-general-header">
+        <div class="fiscal-general-header-content">
+            <div class="fiscal-general-brand">
+                <div class="fiscal-general-logo">⭐</div>
+                <div>
+                    <div class="fiscal-general-title">Panel Fiscal General</div>
+                    <div class="fiscal-general-subtitle">Sistema de Fiscalización</div>
+                </div>
+            </div>
+            
+            <div class="fiscal-general-user-info">
+                <div class="fiscal-general-welcome">
+                    <div class="fiscal-general-name">👋 <strong><%= fiscalGeneral.nombre %></strong></div>
+                    <div class="fiscal-general-details">Zona <%= fiscalGeneral.zona %> | <%= fiscalGeneral.email %></div>
+                    <div class="fiscal-general-institution"><%= fiscalGeneral.institucion %></div>
+                </div>
+                <a href="/fiscal-general/logout" class="fiscal-general-logout-btn">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="fiscal-general-main">
+        <div class="fiscal-general-dashboard-title">
+            <h1 class="dashboard-title">Dashboard Fiscal General</h1>
+            <p class="dashboard-subtitle">Panel de administración y control general del sistema</p>
+        </div>
+
+        <!-- Authority Highlight -->
+        <div class="authority-highlight">
+            <h3>⭐ Permisos de Fiscal General</h3>
+            <p>Tienes acceso completo a todas las funcionalidades administrativas del sistema, incluyendo gestión de usuarios, roles, instituciones y contraseñas</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number"><%= stats.totalFiscales %></div>
+                <div class="stat-label">Total de Fiscales</div>
+                <div class="stat-change positive">📊 En todo el sistema</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-number"><%= stats.fiscalesGenerales %></div>
+                <div class="stat-label">Fiscales Generales</div>
+                <div class="stat-change positive">🌟 Nivel administrativo</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🏛️</div>
+                <div class="stat-number"><%= stats.fiscalesZona %></div>
+                <div class="stat-label">Fiscales de Zona</div>
+                <div class="stat-change positive">🏛️ Gestión zonal</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">👤</div>
+                <div class="stat-number"><%= stats.fiscalesRegulares %></div>
+                <div class="stat-label">Fiscales Regulares</div>
+                <div class="stat-change positive">📋 Base del sistema</div>
+            </div>
+        </div>
+
+        <!-- Zone Statistics -->
+        <div class="zone-stats">
+            <h3>
+                <span>🗺️</span>
+                Distribución por Zonas (1-15)
+            </h3>
+            <div class="zone-grid">
+                <% for (let zona = 1; zona <= 15; zona++) { %>
+                <div class="zone-item">
+                    <div class="zone-number">Zona <%= zona %></div>
+                    <div class="zone-count"><%= stats.fiscalesPorZona[zona] || 0 %> fiscales</div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 class="section-title">
+                <span>🚀</span>
+                Acciones Administrativas
+            </h2>
+            
+            <div class="actions-grid">
+                <a href="/fiscal-general/fiscales" class="action-card">
+                    <div class="action-icon">👥</div>
+                    <div class="action-title">Gestión Completa de Fiscales</div>
+                    <div class="action-description">Administrar usuarios, roles, instituciones y contraseñas (acceso total)</div>
+                </a>
+
+                <a href="/actas/" class="action-card">
+                    <div class="action-icon">📷</div>
+                    <div class="action-title">Supervisar Galería</div>
+                    <div class="action-description">Revisar todas las imágenes cargadas y gestionar archivos</div>
+                </a>
+
+                <a href="/fiscal-general/reportes" class="action-card">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Reportes Generales</div>
+                    <div class="action-description">Generar informes completos y estadísticas del sistema</div>
+                </a>
+
+                <a href="/fiscal-general/configuracion" class="action-card">
+                    <div class="action-icon">⚙️</div>
+                    <div class="action-title">Configuración General</div>
+                    <div class="action-description">Configurar parámetros del sistema y preferencias</div>
+                </a>
+
+                <a href="/upload" class="action-card">
+                    <div class="action-icon">📤</div>
+                    <div class="action-title">Cargar Imágenes</div>
+                    <div class="action-description">Subir nuevas imágenes de actas organizadas por zonas</div>
+                </a>
+
+                <a href="/" class="action-card">
+                    <div class="action-icon">🌐</div>
+                    <div class="action-title">Sitio Principal</div>
+                    <div class="action-description">Ver el sitio público del sistema de fiscalización</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Confirmar logout
+        document.querySelector('.fiscal-general-logout-btn').addEventListener('click', function(e) {
+            if (!confirm('¿Estás seguro de que quieres cerrar la sesión de fiscal general?')) {
+                e.preventDefault();
+            }
+        });
+
+        // Cargar datos del dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard de Fiscal General cargado para:', '<%= fiscalGeneral.nombre %>');
+            console.log('Zona:', '<%= fiscalGeneral.zona %>', 'Institución:', '<%= fiscalGeneral.institucion %>');
+        });
+
+        // Animación para las cards de zonas
+        document.querySelectorAll('.zone-item').forEach((item, index) => {
+            item.style.animationDelay = `${index * 0.1}s`;
+        });
+    </script>
+</body>
+</html>

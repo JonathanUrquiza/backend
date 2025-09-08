@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #663399 0%, #8e44ad 50%, #9b59b6 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Header Fiscal Zona */
+        .fiscal-zona-header {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            border-bottom: 3px solid #b19cd9;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .fiscal-zona-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fiscal-zona-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .fiscal-zona-logo {
+            font-size: 2rem;
+            color: #ffffff;
+        }
+
+        .fiscal-zona-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .fiscal-zona-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #f8f9fa;
+            font-size: 1.1rem;
+        }
+
+        .zone-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .zone-info h3 {
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .zone-info p {
+            color: #f8f9fa;
+            margin: 0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 4px solid #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #f8f9fa;
+            font-size: 0.9rem;
+        }
+
+        /* Fiscales Table */
+        .table-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            border-top: 4px solid #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .fiscales-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .fiscales-table th,
+        .fiscales-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fiscales-table th {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .fiscales-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .fiscales-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type-fiscal {
+            background: rgba(52, 152, 219, 0.3);
+            color: #85c1e9;
+            border: 1px solid rgba(52, 152, 219, 0.5);
+        }
+
+        .type-fiscal_general {
+            background: rgba(230, 126, 34, 0.3);
+            color: #f7b97b;
+            border: 1px solid rgba(230, 126, 34, 0.5);
+        }
+
+        .type-fiscal_zona {
+            background: rgba(155, 89, 182, 0.3);
+            color: #d2b4de;
+            border: 1px solid rgba(155, 89, 182, 0.5);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-role {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-institution {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Nota sobre permisos */
+        .permissions-note {
+            background: rgba(241, 196, 15, 0.2);
+            border: 1px solid rgba(241, 196, 15, 0.4);
+            color: #f4d03f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .permissions-note strong {
+            color: #ffffff;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            gap: 10px;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .pagination a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .pagination .current {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            margin: 10% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            border-top: 4px solid #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #8e44ad;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .fiscales-table {
+                font-size: 0.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="fiscal-zona-header">
+        <div class="fiscal-zona-header-content">
+            <div class="fiscal-zona-brand">
+                <div class="fiscal-zona-logo">👥</div>
+                <div class="fiscal-zona-title">Gestión de Fiscales - Zona <%= fiscalZona.zona %></div>
+            </div>
+            <nav class="fiscal-zona-nav">
+                <a href="/fiscal-zona/dashboard" class="nav-btn">🏠 Dashboard</a>
+                <a href="/fiscal-zona/logout" class="nav-btn">🚪 Salir</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-title">
+            <h1 class="title">Administrar Fiscales</h1>
+            <p class="subtitle">Panel de gestión zonal - Permisos administrativos</p>
+        </div>
+
+        <!-- Información de Zona -->
+        <div class="zone-info">
+            <h3>🏛️ Fiscal de Zona: <%= fiscalZona.nombre %></h3>
+            <p>Tienes permisos administrativos completos excepto cambio de contraseñas</p>
+        </div>
+
+        <!-- Nota de Permisos -->
+        <div class="permissions-note">
+            <strong>ℹ️ Información:</strong> Como fiscal de zona, puedes gestionar roles e instituciones, pero no cambiar contraseñas de otros usuarios.
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.total %></div>
+                <div class="stat-label">Total Fiscales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.fiscales %></div>
+                <div class="stat-label">Fiscales Regulares</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.fiscalesGenerales %></div>
+                <div class="stat-label">Fiscales Generales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.fiscalesZona %></div>
+                <div class="stat-label">Fiscales de Zona</div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">Lista de Fiscales</h2>
+            </div>
+            
+            <table class="fiscales-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Tipo</th>
+                        <th>Zona</th>
+                        <th>Institución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% fiscales.forEach(fiscal => { %>
+                    <tr>
+                        <td><%= fiscal.id %></td>
+                        <td><%= fiscal.nombre %></td>
+                        <td><%= fiscal.email %></td>
+                        <td>
+                            <span class="type-badge type-<%= fiscal.tipo %>">
+                                <%= fiscal.tipo.replace('_', ' ') %>
+                            </span>
+                        </td>
+                        <td><%= fiscal.zona || 'N/A' %></td>
+                        <td><%= fiscal.institucion || 'Sin Asignar' %></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-role" onclick="showRoleModal(<%= fiscal.id %>, '<%= fiscal.nombre %>', '<%= fiscal.tipo %>')">
+                                    🎭 Rol
+                                </button>
+                                <button class="btn btn-institution" onclick="showInstitutionModal(<%= fiscal.id %>, '<%= fiscal.nombre %>', '<%= fiscal.institucion %>')">
+                                    🏢 Institución
+                                </button>
+                                <button class="btn btn-delete" onclick="showDeleteModal(<%= fiscal.id %>, '<%= fiscal.nombre %>', '<%= fiscal.tipo %>')">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <% if (pagination.hasPrev) { %>
+                <a href="?page=<%= pagination.prevPage %>">&laquo; Anterior</a>
+            <% } %>
+            
+            <span class="current">Página <%= pagination.currentPage %> de <%= pagination.totalPages %></span>
+            
+            <% if (pagination.hasNext) { %>
+                <a href="?page=<%= pagination.nextPage %>">Siguiente &raquo;</a>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- Modal para cambiar rol -->
+    <div id="roleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Cambiar Rol de Fiscal</h3>
+                <button class="close" onclick="closeModal('roleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Fiscal:</label>
+                    <input type="text" id="roleModalFiscalName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="newRole" class="form-label">Nuevo Rol:</label>
+                    <select id="newRole" class="form-select">
+                        <option value="fiscal">Fiscal Regular</option>
+                        <option value="fiscal_general">Fiscal General</option>
+                        <option value="fiscal_zona">Fiscal de Zona</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('roleModal')">Cancelar</button>
+                <button class="btn-primary" onclick="updateRole()">Actualizar Rol</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cambiar institución -->
+    <div id="institutionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Cambiar Institución</h3>
+                <button class="close" onclick="closeModal('institutionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Fiscal:</label>
+                    <input type="text" id="institutionModalFiscalName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="newInstitution" class="form-label">Nueva Institución:</label>
+                    <input type="text" id="newInstitution" class="form-input" placeholder="Nombre de la institución">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('institutionModal')">Cancelar</button>
+                <button class="btn-primary" onclick="updateInstitution()">Actualizar Institución</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar eliminación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">⚠️ Confirmar Eliminación</h3>
+                <button class="close" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar al siguiente fiscal?</p>
+                <div class="form-group">
+                    <label class="form-label">Fiscal:</label>
+                    <input type="text" id="deleteModalFiscalName" class="form-input" readonly>
+                </div>
+                <p style="color: #ffffff; font-weight: bold;">Esta acción NO se puede deshacer.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('deleteModal')">Cancelar</button>
+                <button class="btn-primary" onclick="deleteFiscal()" style="background: #e74c3c; color: white;">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFiscalId = null;
+
+        // Funciones para mostrar modales
+        function showRoleModal(fiscalId, fiscalName, currentType) {
+            currentFiscalId = fiscalId;
+            document.getElementById('roleModalFiscalName').value = fiscalName;
+            document.getElementById('newRole').value = currentType;
+            document.getElementById('roleModal').style.display = 'block';
+        }
+
+        function showInstitutionModal(fiscalId, fiscalName, currentInstitution) {
+            currentFiscalId = fiscalId;
+            document.getElementById('institutionModalFiscalName').value = fiscalName;
+            document.getElementById('newInstitution').value = currentInstitution || '';
+            document.getElementById('institutionModal').style.display = 'block';
+        }
+
+        function showDeleteModal(fiscalId, fiscalName, fiscalType) {
+            currentFiscalId = fiscalId;
+            document.getElementById('deleteModalFiscalName').value = `${fiscalName} (${fiscalType.replace('_', ' ')})`;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            currentFiscalId = null;
+        }
+
+        // Funciones para actualizar datos (usando rutas de fiscal-zona)
+        async function updateRole() {
+            const newRole = document.getElementById('newRole').value;
+            
+            try {
+                const response = await fetch('/fiscal-zona/fiscales/assign-role', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscalId: currentFiscalId,
+                        nuevoTipo: newRole
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+            
+            closeModal('roleModal');
+        }
+
+        async function updateInstitution() {
+            const newInstitution = document.getElementById('newInstitution').value.trim();
+            
+            if (!newInstitution) {
+                alert('Por favor ingresa una institución');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/fiscal-zona/fiscales/change-institution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscalId: currentFiscalId,
+                        nuevaInstitucion: newInstitution
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+            
+            closeModal('institutionModal');
+        }
+
+        async function deleteFiscal() {
+            try {
+                const response = await fetch('/fiscal-zona/fiscales/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscalId: currentFiscalId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+            
+            closeModal('deleteModal');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    currentFiscalId = null;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

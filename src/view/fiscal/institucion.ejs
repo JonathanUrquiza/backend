@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            color: #ecf0f1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(52, 73, 94, 0.9));
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: #3498db;
+            text-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #ecf0f1;
+            font-weight: 600;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .info-item {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(52, 152, 219, 0.15);
+            border-color: rgba(52, 152, 219, 0.4);
+        }
+
+        .info-label {
+            color: #3498db;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: #ecf0f1;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .no-assignment {
+            background: rgba(241, 196, 15, 0.1);
+            border: 2px solid rgba(241, 196, 15, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .no-assignment h3 {
+            color: #f1c40f;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .no-assignment p {
+            color: #bdc3c7;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .fiscal-general-card {
+            border-color: rgba(230, 126, 34, 0.5);
+        }
+
+        .fiscal-general-card .card-icon {
+            color: #e67e22;
+            text-shadow: 0 0 15px rgba(230, 126, 34, 0.5);
+        }
+
+        .fiscal-general-card .info-item {
+            background: rgba(230, 126, 34, 0.1);
+            border-color: rgba(230, 126, 34, 0.2);
+        }
+
+        .fiscal-general-card .info-item:hover {
+            background: rgba(230, 126, 34, 0.15);
+            border-color: rgba(230, 126, 34, 0.4);
+        }
+
+        .fiscal-general-card .info-label {
+            color: #e67e22;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .actions-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(52, 152, 219, 0.3);
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        .hierarchy-info {
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(142, 68, 173, 0.1));
+            border: 2px solid rgba(155, 89, 182, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .hierarchy-info h3 {
+            color: #9b59b6;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hierarchy-chain {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            color: #bdc3c7;
+            font-size: 1rem;
+        }
+
+        .hierarchy-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(155, 89, 182, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(155, 89, 182, 0.2);
+        }
+
+        .hierarchy-arrow {
+            font-size: 1.5rem;
+            color: #9b59b6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-info {
+                grid-template-columns: 1fr;
+            }
+
+            .hierarchy-chain {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hierarchy-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🏢 Mi Institución</h1>
+            <p class="subtitle">Información de tu institución y cadena de supervisión</p>
+        </div>
+
+        <!-- Jerarquía de Supervisión -->
+        <div class="hierarchy-info">
+            <h3>
+                <span>🏛️</span>
+                Cadena de Supervisión
+            </h3>
+            <div class="hierarchy-chain">
+                <div class="hierarchy-item">
+                    <span>👤</span>
+                    <span>Fiscal Regular</span>
+                </div>
+                <div class="hierarchy-arrow">→</div>
+                <div class="hierarchy-item">
+                    <span>⭐</span>
+                    <span>Fiscal General</span>
+                </div>
+                <div class="hierarchy-arrow">→</div>
+                <div class="hierarchy-item">
+                    <span>🏛️</span>
+                    <span>Fiscal de Zona</span>
+                </div>
+                <div class="hierarchy-arrow">→</div>
+                <div class="hierarchy-item">
+                    <span>⚡</span>
+                    <span>Administrador</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards-container">
+            <!-- Información de la Institución -->
+            <div class="info-card">
+                <div class="card-header">
+                    <div class="card-icon">🏢</div>
+                    <h2 class="card-title">Institución Asignada</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Nombre de la Institución</div>
+                        <div class="info-value"><%= fiscal.institucion || 'Sin asignar' %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Zona</div>
+                        <div class="info-value"><%= fiscal.zona ? `Zona ${fiscal.zona}` : 'Sin asignar' %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Dirección</div>
+                        <div class="info-value"><%= fiscal.direccion || 'Sin especificar' %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tu Rol</div>
+                        <div class="info-value">👤 Fiscal Regular</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del Fiscal General -->
+            <% if (fiscalGeneral) { %>
+            <div class="info-card fiscal-general-card">
+                <div class="card-header">
+                    <div class="card-icon">⭐</div>
+                    <h2 class="card-title">Fiscal General Asignado</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Nombre</div>
+                        <div class="info-value"><%= fiscalGeneral.nombre %></div>
+                    </div>
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value"><%= fiscalGeneral.email %></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Teléfono</div>
+                            <div class="info-value"><%= fiscalGeneral.cel_num || 'No disponible' %></div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Institución Base</div>
+                        <div class="info-value"><%= fiscalGeneral.institucion || 'Sin especificar' %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Responsabilidad</div>
+                        <div class="info-value">⭐ Supervisa tu institución y actividades de fiscalización</div>
+                    </div>
+                </div>
+            </div>
+            <% } else { %>
+            <div class="no-assignment">
+                <h3>⚠️ Sin Fiscal General Asignado</h3>
+                <p>Aún no tienes un fiscal general asignado a tu institución. El fiscal de zona debe realizar esta asignación para completar la cadena de supervisión.</p>
+            </div>
+            <% } %>
+        </div>
+
+        <!-- Acciones Disponibles -->
+        <div class="actions-section">
+            <div class="btn-group">
+                <a href="/fiscal/dashboard" class="btn btn-primary">
+                    <span>🏠</span>
+                    Volver al Dashboard
+                </a>
+                <a href="/fiscal/presente" class="btn btn-secondary">
+                    <span>📍</span>
+                    Registrar Presente
+                </a>
+                <a href="/upload" class="btn btn-secondary">
+                    <span>📤</span>
+                    Subir Fotos
+                </a>
+                <a href="/fiscal/galeria" class="btn btn-secondary">
+                    <span>📷</span>
+                    Mis Fotos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Log información para debugging
+        console.log('Información de Institución cargada');
+        console.log('Fiscal:', '<%= fiscal.nombre %>');
+        console.log('Institución:', '<%= fiscal.institucion %>');
+        console.log('Zona:', '<%= fiscal.zona %>');
+        
+        <% if (fiscalGeneral) { %>
+        console.log('Fiscal General asignado:', '<%= fiscalGeneral.nombre %>');
+        console.log('Email FG:', '<%= fiscalGeneral.email %>');
+        <% } else { %>
+        console.log('Sin fiscal general asignado');
+        <% } %>
+
+        // Animación de entrada para las cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.info-card, .no-assignment, .hierarchy-info');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.5s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+
+        // Copiar email al clipboard (si existe fiscal general)
+        <% if (fiscalGeneral) { %>
+        document.addEventListener('click', function(e) {
+            if (e.target.textContent === '<%= fiscalGeneral.email %>') {
+                navigator.clipboard.writeText('<%= fiscalGeneral.email %>').then(() => {
+                    // Mostrar feedback visual
+                    const originalText = e.target.textContent;
+                    e.target.textContent = '✅ Copiado!';
+                    setTimeout(() => {
+                        e.target.textContent = originalText;
+                    }, 2000);
+                });
+            }
+        });
+        <% } %>
+    </script>
+</body>
+</html>

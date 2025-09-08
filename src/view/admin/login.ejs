@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-login-container {
+            background-color: #1e1e1e;
+            border-radius: 15px;
+            padding: 50px 40px;
+            border: 2px solid #e74c3c;
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.3);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b, #e74c3c);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #e74c3c; }
+            to { box-shadow: 0 0 20px #e74c3c, 0 0 30px #e74c3c; }
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .admin-icon {
+            font-size: 4rem;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            display: block;
+            text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .admin-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .admin-subtitle {
+            color: #e74c3c;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .admin-warning {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #ff6b6b;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 18px;
+            background: #2a2a2a;
+            border: 2px solid #444;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+            background: #333;
+        }
+
+        .form-input::placeholder {
+            color: #888;
+        }
+
+        .admin-login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .admin-login-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .admin-login-btn:active {
+            transform: translateY(0);
+        }
+
+        .admin-login-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            padding: 15px 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert.error {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #e74c3c;
+        }
+
+        .alert.success {
+            background: rgba(39, 174, 96, 0.15);
+            border: 1px solid rgba(39, 174, 96, 0.4);
+            color: #27ae60;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #444;
+        }
+
+        .form-footer a {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            color: #c0392b;
+            text-decoration: underline;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .security-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #e74c3c;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            transform: rotate(15deg);
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .admin-login-container {
+                padding: 40px 25px;
+                margin: 20px;
+            }
+            
+            .admin-title {
+                font-size: 1.8rem;
+            }
+            
+            .admin-icon {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Efecto de partículas de fondo */
+        .admin-login-container::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, transparent, transparent, rgba(231, 76, 60, 0.05));
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-container">
+        <div class="security-badge">ADMIN</div>
+        
+        <div class="admin-header">
+            <span class="admin-icon">⚡</span>
+            <h1 class="admin-title">Administrador</h1>
+            <p class="admin-subtitle">Acceso Exclusivo al Sistema</p>
+        </div>
+        
+        <div class="admin-warning">
+            🔒 <strong>Área Restringida:</strong> Solo personal autorizado
+        </div>
+        
+        <div class="alert" id="alert"></div>
+        
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email de Administrador</label>
+                <input type="email" id="email" name="email" class="form-input" 
+                       placeholder="admin@sistema.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña de Acceso</label>
+                <input type="password" id="password" name="password" class="form-input" 
+                       placeholder="••••••••••••" required>
+            </div>
+            
+            <button type="submit" class="admin-login-btn" id="adminLoginBtn">
+                <span class="spinner" id="spinner"></span>
+                Acceder al Sistema
+            </button>
+        </form>
+        
+        <div class="form-footer">
+            <p>¿Eres un fiscal? <a href="/login">Acceder como Fiscal</a></p>
+            <p style="margin-top: 15px;"><a href="/">← Volver al Inicio</a></p>
+        </div>
+    </div>
+
+    <script>
+        const adminLoginForm = document.getElementById('adminLoginForm');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const spinner = document.getElementById('spinner');
+        const alert = document.getElementById('alert');
+
+        function showAlert(message, type) {
+            alert.innerHTML = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+        }
+
+        function hideAlert() {
+            alert.style.display = 'none';
+        }
+
+        adminLoginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const formData = new FormData(adminLoginForm);
+            const data = {
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            // Validación básica
+            if (!data.email || !data.password) {
+                showAlert('⚠️ Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            // Mostrar loading
+            adminLoginBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            adminLoginBtn.innerHTML = '<span class="spinner"></span>Verificando acceso...';
+
+            try {
+                const response = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('✅ Acceso autorizado, redirigiendo...', 'success');
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/admin/dashboard';
+                    }, 1000);
+                } else {
+                    showAlert('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('🔌 Error de conexión con el servidor', 'error');
+                console.error('Error:', error);
+            } finally {
+                // Ocultar loading
+                adminLoginBtn.disabled = false;
+                spinner.style.display = 'none';
+                adminLoginBtn.innerHTML = 'Acceder al Sistema';
+            }
+        });
+
+        // Auto-focus en el primer input
+        document.getElementById('email').focus();
+
+        // Prevenir copiar/pegar en campos sensibles (opcional)
+        document.getElementById('password').addEventListener('paste', (e) => {
+            e.preventDefault();
+            showAlert('⚠️ No se permite pegar contraseñas por seguridad', 'error');
+        });
+    </script>
+</body>
+</html>

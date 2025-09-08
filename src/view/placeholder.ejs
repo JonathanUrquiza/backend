@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            min-height: calc(100vh - 64px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        
+        .placeholder-container {
+            text-align: center;
+            max-width: 600px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 60px 40px;
+            border: 1px solid #333;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        
+        .placeholder-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .placeholder-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .placeholder-subtitle {
+            font-size: 1.2rem;
+            color: #14a085;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        
+        .placeholder-description {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #14a085, #0d7377);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(135deg, #117a65, #0a5d61);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(20, 160, 133, 0.3);
+        }
+        
+        .features-preview {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+        }
+        
+        .features-title {
+            font-size: 1.3rem;
+            color: #14a085;
+            margin-bottom: 20px;
+        }
+        
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .feature-item {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #404040;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            border-color: #14a085;
+            background-color: #333;
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        
+        .feature-text {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px 15px;
+            }
+            
+            .placeholder-container {
+                padding: 40px 30px;
+            }
+            
+            .placeholder-title {
+                font-size: 2rem;
+            }
+            
+            .placeholder-icon {
+                font-size: 4rem;
+            }
+            
+            .features-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('components/navbar', { currentPage: '' }) %>
+    
+    <main class="main-content">
+        <div class="placeholder-container">
+            <div class="placeholder-icon">🚧</div>
+            <h1 class="placeholder-title"><%= page.title %></h1>
+            <p class="placeholder-subtitle"><%= page.subtitle %></p>
+            <p class="placeholder-description"><%= page.description %></p>
+            
+            <a href="<%= page.backLink %>" class="back-btn">
+                <%= page.backText %>
+            </a>
+            
+            <div class="features-preview">
+                <h3 class="features-title">📋 Características próximas:</h3>
+                <ul class="features-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-text">Interfaz intuitiva</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">🔒</div>
+                        <div class="feature-text">Sistema seguro</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-text">Diseño responsivo</div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">🎨</div>
+                        <div class="feature-text">Modo oscuro</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

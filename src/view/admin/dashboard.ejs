@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Header Admin */
+        .admin-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-bottom: 3px solid #e74c3c;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .admin-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-logo {
+            font-size: 2.5rem;
+            color: #e74c3c;
+            text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .admin-title {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .admin-subtitle {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .admin-user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-welcome {
+            text-align: right;
+        }
+
+        .admin-name {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .admin-role {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding: 3px 8px;
+            background: rgba(231, 76, 60, 0.2);
+            border-radius: 12px;
+            margin-top: 3px;
+        }
+
+        .admin-logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .admin-logout-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Main Content */
+        .admin-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-dashboard-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dashboard-subtitle {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            border-color: #e74c3c;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b, #e74c3c);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #bdc3c7;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .stat-change.positive {
+            color: #27ae60;
+            background: rgba(39, 174, 96, 0.2);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #444;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            background: linear-gradient(135deg, #3d566e, #2f4155);
+            border-color: #e74c3c;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+
+        .action-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            line-height: 1.4;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            padding: 2rem;
+            border-top: 4px solid #e74c3c;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 1rem 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            width: 40px;
+            text-align: center;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .activity-time {
+            color: #bdc3c7;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .admin-user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .admin-main {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-shimmer {
+            background: linear-gradient(90deg, #2c3e50, #34495e, #2c3e50);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-brand">
+                <div class="admin-logo">⚡</div>
+                <div>
+                    <div class="admin-title">Panel de Administrador</div>
+                    <div class="admin-subtitle">Sistema de Fiscalización</div>
+                </div>
+            </div>
+            
+            <div class="admin-user-info">
+                <div class="admin-welcome">
+                    <div class="admin-name">👋 <strong><%= admin.nombre %></strong></div>
+                    <div class="admin-role"><%= admin.rol.replace('_', ' ').toUpperCase() %></div>
+                </div>
+                <a href="/admin/logout" class="admin-logout-btn">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-dashboard-title">
+            <h1 class="dashboard-title">Dashboard Administrativo</h1>
+            <p class="dashboard-subtitle">Gestión y control del sistema de fiscalización</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number"><%= stats.totalFiscales %></div>
+                <div class="stat-label">Fiscales Registrados</div>
+                <div class="stat-change positive">📈 Activos en el sistema</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-number"><%= stats.totalAdmins %></div>
+                <div class="stat-label">Administradores</div>
+                <div class="stat-change positive">🔐 Usuarios con acceso</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Sistema Operativo</div>
+                <div class="stat-change positive">✅ Funcionando correctamente</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 class="section-title">
+                <span>🚀</span>
+                Acciones Rápidas
+            </h2>
+            
+            <div class="actions-grid">
+                <a href="/admin/fiscales" class="action-card">
+                    <div class="action-icon">👥</div>
+                    <div class="action-title">Gestionar Fiscales</div>
+                    <div class="action-description">Administrar usuarios fiscales, permisos y asignaciones</div>
+                </a>
+
+                <a href="/admin/create-fiscal" class="action-card">
+                    <div class="action-icon">👤</div>
+                    <div class="action-title">Crear Fiscal Regular</div>
+                    <div class="action-description">Registrar nuevo fiscal con permisos básicos</div>
+                </a>
+
+                <a href="/admin/create-fiscal-general" class="action-card">
+                    <div class="action-icon">🏆</div>
+                    <div class="action-title">Crear Fiscal General</div>
+                    <div class="action-description">Registrar fiscal con permisos administrativos completos</div>
+                </a>
+
+                <a href="/admin/create-fiscal-zona" class="action-card">
+                    <div class="action-icon">🌟</div>
+                    <div class="action-title">Crear Fiscal de Zona</div>
+                    <div class="action-description">Registrar fiscal con permisos de gestión de zona</div>
+                </a>
+
+                <a href="/admin/excel-upload" class="action-card">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Cargar desde Excel</div>
+                    <div class="action-description">Importar fiscales masivamente desde archivo Excel</div>
+                </a>
+
+                <a href="/actas/" class="action-card">
+                    <div class="action-icon">📷</div>
+                    <div class="action-title">Ver Galería</div>
+                    <div class="action-description">Revisar imágenes cargadas y gestionar archivos</div>
+                </a>
+
+                <a href="/admin/reportes" class="action-card">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Reportes</div>
+                    <div class="action-description">Generar informes y estadísticas del sistema</div>
+                </a>
+
+                <a href="/admin/configuracion" class="action-card">
+                    <div class="action-icon">⚙️</div>
+                    <div class="action-title">Configuración</div>
+                    <div class="action-description">Ajustes avanzados del sistema</div>
+                </a>
+
+                <a href="/" class="action-card">
+                    <div class="action-icon">🏠</div>
+                    <div class="action-title">Ver Sitio Público</div>
+                    <div class="action-description">Ir a la página principal del sistema</div>
+                </a>
+
+                <a href="/upload" class="action-card">
+                    <div class="action-icon">📤</div>
+                    <div class="action-title">Cargar Imágenes</div>
+                    <div class="action-description">Subir nuevas imágenes de actas por zonas</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h2 class="section-title">
+                <span>📋</span>
+                Actividad Reciente
+            </h2>
+
+            <div class="activity-item">
+                <div class="activity-icon">👤</div>
+                <div class="activity-content">
+                    <div class="activity-title">Sesión de administrador iniciada</div>
+                    <div class="activity-time">Hace unos momentos</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">🚀</div>
+                <div class="activity-content">
+                    <div class="activity-title">Sistema iniciado correctamente</div>
+                    <div class="activity-time">Hoy</div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">📊</div>
+                <div class="activity-content">
+                    <div class="activity-title">Base de datos sincronizada</div>
+                    <div class="activity-time">Hoy</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Actualizar la hora en tiempo real (opcional)
+        function updateTime() {
+            const timeElements = document.querySelectorAll('.activity-time');
+            // Aquí se podría implementar actualización en tiempo real
+        }
+
+        // Cargar datos adicionales de forma asíncrona
+        async function loadDashboardData() {
+            try {
+                // Aquí se podrían cargar más estadísticas
+                console.log('Dashboard cargado para:', '<%= admin.nombre %>');
+            } catch (error) {
+                console.error('Error cargando datos del dashboard:', error);
+            }
+        }
+
+        // Confirmar logout
+        document.querySelector('.admin-logout-btn').addEventListener('click', function(e) {
+            if (!confirm('¿Estás seguro de que quieres cerrar la sesión de administrador?')) {
+                e.preventDefault();
+            }
+        });
+
+        // Cargar datos al inicializar
+        document.addEventListener('DOMContentLoaded', loadDashboardData);
+
+        // Auto-refresh cada 5 minutos (opcional)
+        // setInterval(() => {
+        //     location.reload();
+        // }, 300000);
+    </script>
+</body>
+</html>

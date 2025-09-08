@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const { requireAuth } = require("../controller/authController");
 
-// Rutas para actas - Solo galería
-router.get("/", (req, res) => {
+// Rutas para actas - Solo galería (protegida)
+router.get("/", requireAuth, (req, res) => {
     // Mostrar galería de imágenes organizadas por zona
     const fs = require('fs');
     const path = require('path');

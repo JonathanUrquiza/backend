@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #663399 0%, #8e44ad 50%, #9b59b6 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: #f8f9fa;
+            font-size: 1.1rem;
+        }
+
+        .coming-soon {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .coming-soon h2 {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .coming-soon p {
+            color: #f8f9fa;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .features-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .feature-description {
+            color: #f8f9fa;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">📊 Reportes Zonales</h1>
+            <p class="subtitle">Sistema de informes para fiscal de zona: <%= fiscalZona.nombre %></p>
+        </div>
+
+        <div class="coming-soon">
+            <h2>🚧 Funcionalidad en Desarrollo</h2>
+            <p>Los reportes zonales estarán disponibles próximamente. Aquí podrás generar informes detallados sobre las actividades de fiscalización en tu zona y en todo el sistema.</p>
+            
+            <div class="nav-links">
+                <a href="/fiscal-zona/dashboard" class="nav-link">🏠 Dashboard</a>
+                <a href="/fiscal-zona/fiscales" class="nav-link">👥 Gestión de Fiscales</a>
+                <a href="/actas/" class="nav-link">📷 Galería</a>
+                <a href="/" class="nav-link">🌐 Sitio Principal</a>
+            </div>
+        </div>
+
+        <div class="features-preview">
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <div class="feature-title">Estadísticas Zonales</div>
+                <div class="feature-description">Informes detallados sobre la actividad de fiscales en cada zona, incluyendo registros y participación.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <div class="feature-title">Reportes de Actividad</div>
+                <div class="feature-description">Seguimiento de login, uploads, y acciones realizadas por cada fiscal en el sistema.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Análisis de Datos</div>
+                <div class="feature-description">Gráficos y análisis visual de tendencias, picos de actividad y distribución geográfica.</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <div class="feature-title">Exportación</div>
+                <div class="feature-description">Exportar reportes en PDF, Excel y otros formatos para presentaciones y archivo.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

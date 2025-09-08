@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Header Admin */
+        .admin-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-bottom: 3px solid #e74c3c;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .admin-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-logo {
+            font-size: 2rem;
+            color: #e74c3c;
+        }
+
+        .admin-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #3d566e, #2f4155);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .page-subtitle {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions {
+            grid-column: 1 / -1;
+        }
+
+        .instructions-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions-list li {
+            padding: 0.5rem 0;
+            color: #bdc3c7;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .instructions-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .format-info {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498db;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .format-info-title {
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .format-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .column-item {
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+
+        .required-column {
+            border-left: 3px solid #e74c3c;
+        }
+
+        .optional-column {
+            border-left: 3px solid #f39c12;
+        }
+
+        .upload-form {
+            grid-column: 1 / -1;
+        }
+
+        .upload-area {
+            border: 2px dashed #555;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area:hover {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-subtext {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .file-info {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .file-name {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .file-size {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #3d566e, #2f4155);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .message {
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        .success-message {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            color: #27ae60;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .results-container {
+            display: none;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .results-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-box {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-created .stat-number { color: #27ae60; }
+        .stat-updated .stat-number { color: #3498db; }
+        .stat-skipped .stat-number { color: #f39c12; }
+
+        .stat-label {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        .error-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .error-item {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .error-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .format-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .result-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-brand">
+                <div class="admin-logo">📊</div>
+                <div class="admin-title">Cargar Fiscales desde Excel</div>
+            </div>
+            
+            <a href="/admin/dashboard" class="back-btn">← Volver al Dashboard</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">
+                📊 Importar Fiscales desde Excel
+            </h1>
+            <p class="page-subtitle">Carga masiva de fiscales desde archivos Excel (.xlsx, .xls)</p>
+        </div>
+
+        <div class="content-grid">
+            <!-- Instructions -->
+            <div class="card instructions">
+                <h2 class="card-title">
+                    📋 Instrucciones de Uso
+                </h2>
+                <ul class="instructions-list">
+                    <li>Prepare un archivo Excel con los datos de los fiscales</li>
+                    <li>Asegúrese de que las columnas tengan los nombres correctos</li>
+                    <li>Los fiscales existentes serán actualizados automáticamente</li>
+                    <li>Los nuevos fiscales tendrán la contraseña por defecto: <strong>fiscal123</strong></li>
+                    <li>El archivo debe ser menor a 10MB</li>
+                    <li>Solo se procesan archivos .xlsx y .xls</li>
+                </ul>
+            </div>
+
+            <!-- Format Info -->
+            <div class="card">
+                <h2 class="card-title">
+                    🗂️ Formato del Archivo
+                </h2>
+                <div class="format-info">
+                    <div class="format-info-title">
+                        ℹ️ Columnas del Excel
+                    </div>
+                    <p style="color: #bdc3c7; font-size: 0.9rem; margin-bottom: 1rem;">
+                        Las columnas pueden tener cualquiera de estos nombres (mayúsculas o minúsculas):
+                    </p>
+                    <div class="format-columns">
+                        <div class="column-item required-column">
+                            <strong>NOMBRE</strong> (requerido)<br>
+                            <small>nombre, Nombre</small>
+                        </div>
+                        <div class="column-item required-column">
+                            <strong>EMAIL</strong> (requerido)<br>
+                            <small>email, Email</small>
+                        </div>
+                        <div class="column-item optional-column">
+                            <strong>CELULAR</strong> (opcional)<br>
+                            <small>cel-num, Celular</small>
+                        </div>
+                        <div class="column-item optional-column">
+                            <strong>DIRECCION</strong> (opcional)<br>
+                            <small>direccion, Dirección</small>
+                        </div>
+                        <div class="column-item optional-column">
+                            <strong>ZONA</strong> (opcional)<br>
+                            <small>zona (1-15)</small>
+                        </div>
+                        <div class="column-item optional-column">
+                            <strong>INSTITUCION</strong> (opcional)<br>
+                            <small>institucion, Institución</small>
+                        </div>
+                        <div class="column-item optional-column">
+                            <strong>TIPO</strong> (opcional)<br>
+                            <small>G=General, Z=Zona</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Form -->
+            <div class="card upload-form">
+                <h2 class="card-title">
+                    📤 Subir Archivo Excel
+                </h2>
+
+                <!-- Messages -->
+                <div id="error-message" class="message error-message"></div>
+                <div id="success-message" class="message success-message"></div>
+
+                <!-- Upload Area -->
+                <form id="excel-upload-form" enctype="multipart/form-data">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Haz clic aquí o arrastra tu archivo Excel</div>
+                        <div class="upload-subtext">Formatos soportados: .xlsx, .xls (máx. 10MB)</div>
+                        <input type="file" id="file-input" name="excelFile" accept=".xlsx,.xls" required>
+                    </div>
+
+                    <!-- File Info -->
+                    <div id="file-info" class="file-info">
+                        <div class="file-name" id="file-name"></div>
+                        <div class="file-size" id="file-size"></div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="upload-btn" disabled>
+                            📊 Procesar Archivo Excel
+                        </button>
+                        <a href="/admin/dashboard" class="btn btn-secondary">
+                            ❌ Cancelar
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Results -->
+                <div id="results-container" class="results-container">
+                    <div class="results-title">
+                        📈 Resultados del Procesamiento
+                    </div>
+                    <div class="result-stats">
+                        <div class="stat-box stat-created">
+                            <div class="stat-number" id="stat-created">0</div>
+                            <div class="stat-label">Creados</div>
+                        </div>
+                        <div class="stat-box stat-updated">
+                            <div class="stat-number" id="stat-updated">0</div>
+                            <div class="stat-label">Actualizados</div>
+                        </div>
+                        <div class="stat-box stat-skipped">
+                            <div class="stat-number" id="stat-skipped">0</div>
+                            <div class="stat-label">Omitidos</div>
+                        </div>
+                    </div>
+                    <div id="error-list-container" style="display: none;">
+                        <h4 style="color: #e74c3c; margin-bottom: 1rem;">⚠️ Errores encontrados:</h4>
+                        <div class="error-list" id="error-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const fileName = document.getElementById('file-name');
+        const fileSize = document.getElementById('file-size');
+        const uploadBtn = document.getElementById('upload-btn');
+        const form = document.getElementById('excel-upload-form');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const progressBar = document.getElementById('progress-bar');
+        const progressFill = document.getElementById('progress-fill');
+        const resultsContainer = document.getElementById('results-container');
+
+        // Upload area click
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect();
+            }
+        });
+
+        // File selection
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (file) {
+                // Validate file type
+                const allowedTypes = [
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'application/vnd.ms-excel'
+                ];
+                
+                if (!allowedTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls)$/i)) {
+                    showError('Solo se permiten archivos Excel (.xlsx, .xls)');
+                    resetFileInput();
+                    return;
+                }
+
+                // Validate file size (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('El archivo es demasiado grande. Máximo 10MB.');
+                    resetFileInput();
+                    return;
+                }
+
+                // Show file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'block';
+                uploadBtn.disabled = false;
+                
+                hideMessages();
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function resetFileInput() {
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            uploadBtn.disabled = true;
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!fileInput.files[0]) {
+                showError('Por favor selecciona un archivo Excel');
+                return;
+            }
+
+            hideMessages();
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '⏳ Procesando archivo...';
+            progressBar.style.display = 'block';
+            resultsContainer.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('excelFile', fileInput.files[0]);
+
+            try {
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress > 90) progress = 90;
+                    progressFill.style.width = progress + '%';
+                }, 100);
+
+                const response = await fetch('/admin/excel-upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess(result.message);
+                    displayResults(result.results);
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error de conexión. Por favor, intente nuevamente.');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = '📊 Procesar Archivo Excel';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 1000);
+            }
+        });
+
+        function displayResults(results) {
+            document.getElementById('stat-created').textContent = results.created;
+            document.getElementById('stat-updated').textContent = results.updated;
+            document.getElementById('stat-skipped').textContent = results.skipped;
+
+            if (results.errors && results.errors.length > 0) {
+                const errorListContainer = document.getElementById('error-list-container');
+                const errorList = document.getElementById('error-list');
+                
+                errorList.innerHTML = '';
+                results.errors.forEach(error => {
+                    const errorItem = document.createElement('div');
+                    errorItem.className = 'error-item';
+                    errorItem.textContent = error;
+                    errorList.appendChild(errorItem);
+                });
+                
+                errorListContainer.style.display = 'block';
+            }
+
+            resultsContainer.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

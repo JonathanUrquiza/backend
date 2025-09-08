@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d68910 0%, #f39c12 50%, #e67e22 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+        }
+
+        /* Header Fiscal General */
+        .fiscal-general-header {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border-bottom: 3px solid #d68910;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .fiscal-general-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fiscal-general-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .fiscal-general-logo {
+            font-size: 2rem;
+            color: #2c3e50;
+        }
+
+        .fiscal-general-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .fiscal-general-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background: rgba(44, 62, 80, 0.2);
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid rgba(44, 62, 80, 0.3);
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background: rgba(44, 62, 80, 0.3);
+            color: #2c3e50;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #5d6d7e;
+            font-size: 1.1rem;
+        }
+
+        .general-info {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(243, 156, 18, 0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .general-info h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .general-info p {
+            color: #5d6d7e;
+            margin: 0;
+        }
+
+        /* Permisos completos */
+        .permissions-note {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(46, 204, 113, 0.1));
+            border: 2px solid rgba(39, 174, 96, 0.3);
+            color: #27ae60;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .permissions-note strong {
+            color: #2c3e50;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 4px solid #f39c12;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #5d6d7e;
+            font-size: 0.9rem;
+        }
+
+        /* Fiscales Table */
+        .table-container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+            border-radius: 12px;
+            overflow: hidden;
+            border-top: 4px solid #f39c12;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(243, 156, 18, 0.2);
+        }
+
+        .table-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .fiscales-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .fiscales-table th,
+        .fiscales-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(243, 156, 18, 0.1);
+        }
+
+        .fiscales-table th {
+            background: rgba(243, 156, 18, 0.1);
+            color: #2c3e50;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .fiscales-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .fiscales-table tbody tr:hover {
+            background: rgba(243, 156, 18, 0.05);
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type-fiscal {
+            background: rgba(52, 152, 219, 0.2);
+            color: #2980b9;
+            border: 1px solid rgba(52, 152, 219, 0.4);
+        }
+
+        .type-fiscal_general {
+            background: rgba(243, 156, 18, 0.2);
+            color: #d68910;
+            border: 1px solid rgba(243, 156, 18, 0.4);
+        }
+
+        .type-fiscal_zona {
+            background: rgba(155, 89, 182, 0.2);
+            color: #8e44ad;
+            border: 1px solid rgba(155, 89, 182, 0.4);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-role {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-institution {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-password {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            gap: 10px;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+        }
+
+        .pagination a:hover {
+            background: rgba(243, 156, 18, 0.1);
+            border-color: rgba(243, 156, 18, 0.4);
+        }
+
+        .pagination .current {
+            background: #f39c12;
+            color: white;
+            border-color: #f39c12;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+            margin: 8% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            border-top: 4px solid #f39c12;
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #e74c3c;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            background: #ffffff;
+            border: 2px solid rgba(243, 156, 18, 0.2);
+            border-radius: 8px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .form-input::placeholder {
+            color: #95a5a6;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            background: #f39c12;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #e67e22;
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .fiscales-table {
+                font-size: 0.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="fiscal-general-header">
+        <div class="fiscal-general-header-content">
+            <div class="fiscal-general-brand">
+                <div class="fiscal-general-logo">👥</div>
+                <div class="fiscal-general-title">Gestión de Fiscales - General</div>
+            </div>
+            <nav class="fiscal-general-nav">
+                <a href="/fiscal-general/dashboard" class="nav-btn">🏠 Dashboard</a>
+                <a href="/fiscal-general/logout" class="nav-btn">🚪 Salir</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-title">
+            <h1 class="title">Administración Total de Fiscales</h1>
+            <p class="subtitle">Panel completo de gestión - Todos los permisos administrativos</p>
+        </div>
+
+        <!-- Información del Fiscal General -->
+        <div class="general-info">
+            <h3>⭐ Fiscal General: <%= fiscalGeneral.nombre %></h3>
+            <p>Zona <%= fiscalGeneral.zona %> | <%= fiscalGeneral.institucion %></p>
+        </div>
+
+        <!-- Permisos Completos -->
+        <div class="permissions-note">
+            <strong>✅ Acceso Total:</strong> Como fiscal general, tienes permisos completos para gestionar roles, instituciones, contraseñas y eliminar usuarios.
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.total %></div>
+                <div class="stat-label">Total Fiscales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.fiscales %></div>
+                <div class="stat-label">Fiscales Regulares</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.fiscalesGenerales %></div>
+                <div class="stat-label">Fiscales Generales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number"><%= stats.fiscalesZona %></div>
+                <div class="stat-label">Fiscales de Zona</div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">Lista Completa de Fiscales</h2>
+            </div>
+            
+            <table class="fiscales-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Tipo</th>
+                        <th>Zona</th>
+                        <th>Institución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% fiscales.forEach(fiscal => { %>
+                    <tr>
+                        <td><%= fiscal.id %></td>
+                        <td><%= fiscal.nombre %></td>
+                        <td><%= fiscal.email %></td>
+                        <td>
+                            <span class="type-badge type-<%= fiscal.tipo %>">
+                                <%= fiscal.tipo.replace('_', ' ') %>
+                            </span>
+                        </td>
+                        <td><%= fiscal.zona || 'N/A' %></td>
+                        <td><%= fiscal.institucion || 'Sin Asignar' %></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-role" onclick="showRoleModal(<%= fiscal.id %>, '<%= fiscal.nombre %>', '<%= fiscal.tipo %>')">
+                                    🎭 Rol
+                                </button>
+                                <button class="btn btn-institution" onclick="showInstitutionModal(<%= fiscal.id %>, '<%= fiscal.nombre %>', '<%= fiscal.institucion %>')">
+                                    🏢 Institución
+                                </button>
+                                <button class="btn btn-password" onclick="showPasswordModal(<%= fiscal.id %>, '<%= fiscal.nombre %>')">
+                                    🔐 Password
+                                </button>
+                                <button class="btn btn-delete" onclick="showDeleteModal(<%= fiscal.id %>, '<%= fiscal.nombre %>', '<%= fiscal.tipo %>')">
+                                    🗑️ Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <% if (pagination.hasPrev) { %>
+                <a href="?page=<%= pagination.prevPage %>">&laquo; Anterior</a>
+            <% } %>
+            
+            <span class="current">Página <%= pagination.currentPage %> de <%= pagination.totalPages %></span>
+            
+            <% if (pagination.hasNext) { %>
+                <a href="?page=<%= pagination.nextPage %>">Siguiente &raquo;</a>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- Modal para cambiar rol -->
+    <div id="roleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Cambiar Rol de Fiscal</h3>
+                <button class="close" onclick="closeModal('roleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Fiscal:</label>
+                    <input type="text" id="roleModalFiscalName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="newRole" class="form-label">Nuevo Rol:</label>
+                    <select id="newRole" class="form-select">
+                        <option value="fiscal">Fiscal Regular</option>
+                        <option value="fiscal_general">Fiscal General</option>
+                        <option value="fiscal_zona">Fiscal de Zona</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('roleModal')">Cancelar</button>
+                <button class="btn-primary" onclick="updateRole()">Actualizar Rol</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cambiar institución -->
+    <div id="institutionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Cambiar Institución</h3>
+                <button class="close" onclick="closeModal('institutionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Fiscal:</label>
+                    <input type="text" id="institutionModalFiscalName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="newInstitution" class="form-label">Nueva Institución:</label>
+                    <input type="text" id="newInstitution" class="form-input" placeholder="Nombre de la institución">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('institutionModal')">Cancelar</button>
+                <button class="btn-primary" onclick="updateInstitution()">Actualizar Institución</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cambiar contraseña -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Cambiar Contraseña</h3>
+                <button class="close" onclick="closeModal('passwordModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Fiscal:</label>
+                    <input type="text" id="passwordModalFiscalName" class="form-input" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword" class="form-label">Nueva Contraseña:</label>
+                    <input type="password" id="newPassword" class="form-input" placeholder="Mínimo 6 caracteres">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('passwordModal')">Cancelar</button>
+                <button class="btn-primary" onclick="updatePassword()">Actualizar Contraseña</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar eliminación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">⚠️ Confirmar Eliminación</h3>
+                <button class="close" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar al siguiente fiscal?</p>
+                <div class="form-group">
+                    <label class="form-label">Fiscal:</label>
+                    <input type="text" id="deleteModalFiscalName" class="form-input" readonly>
+                </div>
+                <p style="color: #e74c3c; font-weight: bold;">Esta acción NO se puede deshacer.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('deleteModal')">Cancelar</button>
+                <button class="btn-primary" onclick="deleteFiscal()" style="background: #e74c3c;">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFiscalId = null;
+
+        // Funciones para mostrar modales
+        function showRoleModal(fiscalId, fiscalName, currentType) {
+            currentFiscalId = fiscalId;
+            document.getElementById('roleModalFiscalName').value = fiscalName;
+            document.getElementById('newRole').value = currentType;
+            document.getElementById('roleModal').style.display = 'block';
+        }
+
+        function showInstitutionModal(fiscalId, fiscalName, currentInstitution) {
+            currentFiscalId = fiscalId;
+            document.getElementById('institutionModalFiscalName').value = fiscalName;
+            document.getElementById('newInstitution').value = currentInstitution || '';
+            document.getElementById('institutionModal').style.display = 'block';
+        }
+
+        function showPasswordModal(fiscalId, fiscalName) {
+            currentFiscalId = fiscalId;
+            document.getElementById('passwordModalFiscalName').value = fiscalName;
+            document.getElementById('newPassword').value = '';
+            document.getElementById('passwordModal').style.display = 'block';
+        }
+
+        function showDeleteModal(fiscalId, fiscalName, fiscalType) {
+            currentFiscalId = fiscalId;
+            document.getElementById('deleteModalFiscalName').value = `${fiscalName} (${fiscalType.replace('_', ' ')})`;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            currentFiscalId = null;
+        }
+
+        // Funciones para actualizar datos (usando rutas de fiscal-general)
+        async function updateRole() {
+            const newRole = document.getElementById('newRole').value;
+            
+            try {
+                const response = await fetch('/fiscal-general/fiscales/assign-role', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscalId: currentFiscalId,
+                        nuevoTipo: newRole
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+            
+            closeModal('roleModal');
+        }
+
+        async function updateInstitution() {
+            const newInstitution = document.getElementById('newInstitution').value.trim();
+            
+            if (!newInstitution) {
+                alert('Por favor ingresa una institución');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/fiscal-general/fiscales/change-institution', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscalId: currentFiscalId,
+                        nuevaInstitucion: newInstitution
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+            
+            closeModal('institutionModal');
+        }
+
+        async function updatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            
+            if (!newPassword || newPassword.length < 6) {
+                alert('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/fiscal-general/fiscales/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscalId: currentFiscalId,
+                        nuevaPassword: newPassword
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+            
+            closeModal('passwordModal');
+        }
+
+        async function deleteFiscal() {
+            try {
+                const response = await fetch('/fiscal-general/fiscales/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fiscalId: currentFiscalId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+            
+            closeModal('deleteModal');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    currentFiscalId = null;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

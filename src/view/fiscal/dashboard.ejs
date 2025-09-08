@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            color: #ecf0f1;
+            min-height: 100vh;
+        }
+
+        /* Header Fiscal */
+        .fiscal-header {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            border-bottom: 3px solid #3498db;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .fiscal-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .fiscal-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .fiscal-logo {
+            font-size: 2.5rem;
+            color: #3498db;
+            text-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+
+        .fiscal-title {
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .fiscal-subtitle {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .fiscal-user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .fiscal-welcome {
+            text-align: right;
+        }
+
+        .fiscal-name {
+            color: #ecf0f1;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .fiscal-details {
+            color: #bdc3c7;
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        .fiscal-logout-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .fiscal-logout-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #1f5f8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Main Content */
+        .fiscal-main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .fiscal-dashboard-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            color: #ecf0f1;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dashboard-subtitle {
+            color: #bdc3c7;
+            font-size: 1.1rem;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.1));
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .welcome-card h3 {
+            color: #ecf0f1;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .welcome-card p {
+            color: #bdc3c7;
+            margin: 0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(52, 73, 94, 0.8));
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 2px solid rgba(52, 152, 219, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(52, 152, 219, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9, #3498db);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ecf0f1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #bdc3c7;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #ecf0f1;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(52, 73, 94, 0.8));
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .action-card:hover {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.1));
+            border-color: rgba(52, 152, 219, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            color: #3498db;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .action-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ecf0f1;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            line-height: 1.4;
+        }
+
+        /* Institution Info */
+        .institution-info {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.8), rgba(52, 73, 94, 0.8));
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-top: 4px solid #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .institution-info h3 {
+            color: #ecf0f1;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .info-label {
+            color: #3498db;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: #ecf0f1;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .fiscal-header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .fiscal-user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .fiscal-main {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fiscal Header -->
+    <header class="fiscal-header">
+        <div class="fiscal-header-content">
+            <div class="fiscal-brand">
+                <div class="fiscal-logo">👤</div>
+                <div>
+                    <div class="fiscal-title">Panel de Fiscal</div>
+                    <div class="fiscal-subtitle">Sistema de Fiscalización</div>
+                </div>
+            </div>
+            
+            <div class="fiscal-user-info">
+                <div class="fiscal-welcome">
+                    <div class="fiscal-name">👋 <strong><%= fiscal.nombre %></strong></div>
+                    <div class="fiscal-details"><%= fiscal.zona ? `Zona ${fiscal.zona}` : 'Sin zona' %> | <%= fiscal.email %></div>
+                </div>
+                <a href="/logout" class="fiscal-logout-btn">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="fiscal-main">
+        <div class="fiscal-dashboard-title">
+            <h1 class="dashboard-title">Mi Panel de Fiscal</h1>
+            <p class="dashboard-subtitle">Gestiona tus actividades de fiscalización</p>
+        </div>
+
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <h3>🎯 Bienvenido al Sistema</h3>
+            <p>Desde aquí puedes subir fotos, registrar tu presente, ver información de tu institución y revisar tus actividades</p>
+        </div>
+
+        <!-- Institution Info -->
+        <div class="institution-info">
+            <h3>
+                <span>🏢</span>
+                Mi Institución Asignada
+            </h3>
+            <div class="info-grid">
+                <% if (institucion) { %>
+                <div class="info-item">
+                    <div class="info-label">Nombre de la Institución</div>
+                    <div class="info-value"><%= institucion.nombre %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Dirección de la Institución</div>
+                    <div class="info-value"><%= institucion.direccion %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Zona de la Institución</div>
+                    <div class="info-value">Zona <%= institucion.zona %></div>
+                </div>
+                <% if (institucion.telefono) { %>
+                <div class="info-item">
+                    <div class="info-label">Teléfono</div>
+                    <div class="info-value"><%= institucion.telefono %></div>
+                </div>
+                <% } %>
+                <% if (institucion.email) { %>
+                <div class="info-item">
+                    <div class="info-label">Email Institucional</div>
+                    <div class="info-value"><%= institucion.email %></div>
+                </div>
+                <% } %>
+                <% } else { %>
+                <div class="info-item">
+                    <div class="info-label">Estado</div>
+                    <div class="info-value" style="color: #e74c3c;">Sin institución asignada</div>
+                </div>
+                <% } %>
+                
+                <% if (fiscalGeneral) { %>
+                <div class="info-item">
+                    <div class="info-label">Fiscal General Asignado</div>
+                    <div class="info-value">
+                        <strong><%= fiscalGeneral.nombre %></strong><br>
+                        <small style="color: #bdc3c7;"><%= fiscalGeneral.email %></small>
+                        <% if (fiscalGeneral.cel_num) { %>
+                        <br><small style="color: #bdc3c7;">📱 <%= fiscalGeneral.cel_num %></small>
+                        <% } %>
+                    </div>
+                </div>
+                <% } else { %>
+                <div class="info-item">
+                    <div class="info-label">Fiscal General</div>
+                    <div class="info-value" style="color: #f39c12;">Sin fiscal general asignado</div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📷</div>
+                <div class="stat-number"><%= stats.totalPhotos %></div>
+                <div class="stat-label">Fotos Subidas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📍</div>
+                <div class="stat-number">-</div>
+                <div class="stat-label">Presentes Registrados</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number"><%= institucion ? '✅' : '❌' %></div>
+                <div class="stat-label"><%= institucion ? 'Institución Asignada' : 'Sin Institución' %></div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 class="section-title">
+                <span>🚀</span>
+                Acciones Disponibles
+            </h2>
+            
+            <div class="actions-grid">
+                <a href="/upload" class="action-card">
+                    <div class="action-icon">📤</div>
+                    <div class="action-title">Subir Fotos</div>
+                    <div class="action-description">Cargar nuevas imágenes de actas organizadas por zona</div>
+                </a>
+
+                <a href="/fiscal/presente" class="action-card">
+                    <div class="action-icon">📍</div>
+                    <div class="action-title">Registrar Presente</div>
+                    <div class="action-description">Marcar presente con tu ubicación geográfica actual</div>
+                </a>
+
+                <a href="/fiscal/institucion" class="action-card">
+                    <div class="action-icon">🏢</div>
+                    <div class="action-title">Mi Institución</div>
+                    <div class="action-description">Ver detalles de tu institución y fiscal general asignado</div>
+                </a>
+
+                <a href="/fiscal/galeria" class="action-card">
+                    <div class="action-icon">📷</div>
+                    <div class="action-title">Mis Fotos</div>
+                    <div class="action-description">Revisar todas las fotos que has subido al sistema</div>
+                </a>
+
+                <a href="/actas/" class="action-card">
+                    <div class="action-icon">🖼️</div>
+                    <div class="action-title">Ver Galería General</div>
+                    <div class="action-description">Explorar todas las imágenes del sistema por zonas</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Confirmar logout
+        document.querySelector('.fiscal-logout-btn').addEventListener('click', function(e) {
+            if (!confirm('¿Estás seguro de que quieres cerrar la sesión?')) {
+                e.preventDefault();
+            }
+        });
+
+        // Cargar datos del dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard de Fiscal cargado para:', '<%= fiscal.nombre %>');
+            <% if (institucion) { %>
+            console.log('Institución:', '<%= institucion.nombre %>', 'Zona <%= institucion.zona %>');
+            <% } else { %>
+            console.log('Sin institución asignada');
+            <% } %>
+            
+            <% if (fiscalGeneral) { %>
+            console.log('Fiscal General asignado:', '<%= fiscalGeneral.nombre %>');
+            <% } %>
+        });
+
+        // Mostrar estadísticas de fotos por zona
+        <% if (Object.keys(stats.photosByZone).length > 0) { %>
+        console.log('Fotos por zona:');
+        <% Object.entries(stats.photosByZone).forEach(([zona, cantidad]) => { %>
+        console.log('  <%= zona %>: <%= cantidad %> fotos');
+        <% }); %>
+        <% } %>
+    </script>
+</body>
+</html>
+

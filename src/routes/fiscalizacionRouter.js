@@ -5,9 +5,14 @@ const {
     fiscalUp, institucionUp, zonaUp,
     fiscalInstitucionUp, fiscalZonaUp, institucionZonaUp, zonaInstitucionUp
 } = require("../controller/fiscalizacionController");
+const { requireAuth } = require("../controller/authController");
 
-// Rutas para fiscalización
+// Aplicar autenticación a todas las rutas de fiscalización
+router.use(requireAuth);
+
+// Rutas para fiscalización (todas protegidas)
 router.get("/", fiscales);
+router.post("/presente", require("../controller/fiscalizacionController").marcarPresente); // Marcar presentismo
 router.post("/fiscales", fiscalUp);//crea un nuevo fiscal
 router.get("/instituciones", instituciones);//consulta las instituciones
 router.post("/instituciones", institucionUp);//crea una nueva institución

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Header Admin */
+        .admin-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-bottom: 3px solid #e74c3c;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .admin-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-logo {
+            font-size: 2rem;
+            color: #e74c3c;
+        }
+
+        .admin-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #3d566e, #2f4155);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-subtitle {
+            color: #bdc3c7;
+            font-size: 1rem;
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: #e0e0e0;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            background: rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: #777;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            color: #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #e74c3c;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .form-select option {
+            background: #2c3e50;
+            color: #e0e0e0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-grid-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #3d566e, #2f4155);
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid #3498db;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-box-title {
+            color: #3498db;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box-text {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #e74c3c;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(39, 174, 96, 0.2);
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #27ae60;
+            display: none;
+        }
+
+        /* Loading State */
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-brand">
+                <div class="admin-logo">⚡</div>
+                <div class="admin-title">
+                    <%= tipoFiscal === 'fiscal' ? 'Crear Fiscal Regular' : 
+                        tipoFiscal === 'fiscal_general' ? 'Crear Fiscal General' : 
+                        'Crear Fiscal de Zona' %>
+                </div>
+            </div>
+            
+            <a href="/admin/dashboard" class="back-btn">← Volver al Dashboard</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="form-header">
+            <h1 class="form-title">
+                <% if (tipoFiscal === 'fiscal') { %>
+                    👤 Crear Nuevo Fiscal Regular
+                <% } else if (tipoFiscal === 'fiscal_general') { %>
+                    🏆 Crear Nuevo Fiscal General
+                <% } else { %>
+                    🌟 Crear Nuevo Fiscal de Zona
+                <% } %>
+            </h1>
+            <p class="form-subtitle">Complete todos los datos requeridos para crear el nuevo fiscal</p>
+        </div>
+
+        <div class="form-container">
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-box-title">
+                    ℹ️ Información del Tipo de Fiscal
+                </div>
+                <div class="info-box-text">
+                    <% if (tipoFiscal === 'fiscal') { %>
+                        <strong>Fiscal Regular:</strong> Puede subir fotos, ver datos de su institución, registrar presencia y acceder a su galería personal.
+                    <% } else if (tipoFiscal === 'fiscal_general') { %>
+                        <strong>Fiscal General:</strong> Tiene permisos administrativos completos, incluyendo cambio de contraseñas y gestión de otros fiscales.
+                    <% } else { %>
+                        <strong>Fiscal de Zona:</strong> Puede gestionar fiscales (asignar roles, cambiar instituciones) excepto cambiar contraseñas.
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+
+            <!-- Form -->
+            <form id="create-fiscal-form">
+                <input type="hidden" name="tipo" value="<%= tipoFiscal %>">
+                
+                <div class="form-grid">
+                    <!-- Nombre completo -->
+                    <div class="form-group form-grid-full">
+                        <label class="form-label" for="nombre">
+                            Nombre Completo <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="nombre" 
+                            name="nombre" 
+                            placeholder="Ej: Juan Carlos Pérez"
+                            required
+                        >
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label" for="email">
+                            Email <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            class="form-input" 
+                            id="email" 
+                            name="email" 
+                            placeholder="juan.perez@email.com"
+                            required
+                        >
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="form-group">
+                        <label class="form-label" for="password">
+                            Contraseña <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Contraseña segura"
+                            required
+                            minlength="6"
+                        >
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label class="form-label" for="cel-num">
+                            Número de Teléfono
+                        </label>
+                        <input 
+                            type="tel" 
+                            class="form-input" 
+                            id="cel-num" 
+                            name="cel-num" 
+                            placeholder="Ej: +54 9 11 1234-5678"
+                        >
+                    </div>
+
+                    <!-- Zona -->
+                    <div class="form-group">
+                        <label class="form-label" for="zona">
+                            Zona (1-15)
+                        </label>
+                        <select class="form-select" id="zona" name="zona">
+                            <option value="">Seleccionar zona...</option>
+                            <% for (let i = 1; i <= 15; i++) { %>
+                                <option value="<%= i %>">Zona <%= i %></option>
+                            <% } %>
+                        </select>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="form-group form-grid-full">
+                        <label class="form-label" for="direccion">
+                            Dirección
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="direccion" 
+                            name="direccion" 
+                            placeholder="Ej: Av. Corrientes 1234, CABA"
+                        >
+                    </div>
+
+                    <!-- Institución -->
+                    <div class="form-group form-grid-full">
+                        <label class="form-label" for="institucion">
+                            Institución
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            id="institucion" 
+                            name="institucion" 
+                            placeholder="Nombre de la institución asignada"
+                        >
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        ✅ Crear <%= tipoFiscal === 'fiscal' ? 'Fiscal Regular' : 
+                                     tipoFiscal === 'fiscal_general' ? 'Fiscal General' : 
+                                     'Fiscal de Zona' %>
+                    </button>
+                    <a href="/admin/dashboard" class="btn btn-secondary">
+                        ❌ Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('create-fiscal-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            // Hide previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ Creando fiscal...';
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/admin/create-fiscal', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    successMessage.textContent = result.message;
+                    successMessage.style.display = 'block';
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/admin/dashboard';
+                    }, 2000);
+                } else {
+                    errorMessage.textContent = result.message;
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Error de conexión. Por favor, intente nuevamente.';
+                errorMessage.style.display = 'block';
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `✅ Crear <%= tipoFiscal === 'fiscal' ? 'Fiscal Regular' : 
+                                                    tipoFiscal === 'fiscal_general' ? 'Fiscal General' : 
+                                                    'Fiscal de Zona' %>`;
+            }
+        });
+
+        // Form validation
+        document.getElementById('nombre').addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            this.value = this.value.toLowerCase().trim();
+        });
+
+        document.getElementById('cel-num').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9\s\-\+\(\)]/g, '');
+        });
+    </script>
+</body>
+</html>

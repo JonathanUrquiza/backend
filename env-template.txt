@@ -1,0 +1,15 @@
+# Copia este archivo como .env y configura tus valores reales
+
+# Database Configuration - SQLite
+DB_NAME=funkotest_elecciones.db
+DB_PATH=./database
+
+# Application Configuration
+NODE_ENV=development
+PORT=3000
+
+# Session Configuration
+SESSION_SECRET=tu_clave_secreta_muy_segura_2024
+
+# Security
+JWT_SECRET=tu_jwt_secret_muy_seguro_2024

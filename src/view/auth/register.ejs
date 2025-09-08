@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= view.title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            min-height: calc(100vh - 64px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid #333;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .register-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .register-subtitle {
+            color: #14a085;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #2a2a2a;
+            border: 2px solid #404040;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #14a085;
+            box-shadow: 0 0 0 3px rgba(20, 160, 133, 0.1);
+            background: #333;
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #14a085, #0d7377);
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(135deg, #117a65, #0a5d61);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(20, 160, 133, 0.3);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .register-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .alert.success {
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            color: #27ae60;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #333;
+        }
+
+        .form-footer a {
+            color: #14a085;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            color: #0d7377;
+            text-decoration: underline;
+        }
+
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid transparent;
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 10px;
+            }
+            
+            .register-container {
+                padding: 30px 20px;
+            }
+            
+            .register-title {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('../components/navbar', { 
+        currentPage: 'register'
+    }) %>
+    
+    <main class="main-content">
+        <div class="register-container">
+            <div class="register-header">
+                <span class="register-icon">👤</span>
+                <h1 class="register-title">Crear Cuenta</h1>
+                <p class="register-subtitle">Regístrate en el sistema de fiscalización</p>
+            </div>
+            
+            <div class="alert" id="alert"></div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="nombre" class="form-label">Nombre completo</label>
+                    <input type="text" id="nombre" name="nombre" class="form-input" 
+                           placeholder="Tu nombre completo" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" 
+                           placeholder="tu@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-input" 
+                           placeholder="••••••••" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" 
+                           placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="register-btn" id="registerBtn">
+                    <span class="spinner" id="spinner"></span>
+                    Crear Cuenta
+                </button>
+            </form>
+            
+            <div class="form-footer">
+                <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const spinner = document.getElementById('spinner');
+        const alert = document.getElementById('alert');
+
+        function showAlert(message, type) {
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            alert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideAlert() {
+            alert.style.display = 'none';
+        }
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideAlert();
+
+            const formData = new FormData(registerForm);
+            const data = {
+                nombre: formData.get('nombre'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+
+            // Validaciones
+            if (!data.nombre || !data.email || !data.password || !data.confirmPassword) {
+                showAlert('Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            if (data.password !== data.confirmPassword) {
+                showAlert('Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            if (data.password.length < 6) {
+                showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+
+            // Mostrar loading
+            registerBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            registerBtn.innerHTML = '<span class="spinner"></span>Creando cuenta...';
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('¡Cuenta creada exitosamente! Redirigiendo al login...', 'success');
+                    registerForm.reset();
+                    setTimeout(() => {
+                        window.location.href = result.redirect || '/login';
+                    }, 1500);
+                } else {
+                    showAlert(result.message || 'Error creando la cuenta', 'error');
+                }
+            } catch (error) {
+                showAlert('Error de conexión. Inténtalo de nuevo.', 'error');
+                console.error('Error:', error);
+            } finally {
+                // Ocultar loading
+                registerBtn.disabled = false;
+                spinner.style.display = 'none';
+                registerBtn.innerHTML = 'Crear Cuenta';
+            }
+        });
+
+        // Auto-focus en el primer input
+        document.getElementById('nombre').focus();
+    </script>
+</body>
+</html>
