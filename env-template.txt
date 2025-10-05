@@ -1,15 +1,33 @@
 # Copia este archivo como .env y configura tus valores reales
 
-# Database Configuration - SQLite
-DB_NAME=funkotest_elecciones.db
-DB_PATH=./database
+# =============================================================================
+# CONFIGURACIÓN DE BASE DE DATOS
+# =============================================================================
+# Elige el tipo de base de datos: 'sqlite' (local) o 'mysql' (nube)
+DB_TYPE=mysql
 
-# Application Configuration
+# --- Configuración para MySQL (AlwaysData u otro hosting) ---
+# Obtén estos datos desde el panel de AlwaysData > Databases
+DB_HOST=mysql-tunombre.alwaysdata.net
+DB_PORT=3306
+DB_NAME=tunombre_elecciones
+DB_USER=tunombre
+DB_PASSWORD=tu_password_mysql
+
+# --- Configuración para SQLite (solo si DB_TYPE=sqlite) ---
+# DATABASE_PATH=./elecciones.db
+
+# =============================================================================
+# CONFIGURACIÓN DE LA APLICACIÓN
+# =============================================================================
 NODE_ENV=development
 PORT=3000
 
+# =============================================================================
+# SEGURIDAD
+# =============================================================================
 # Session Configuration
 SESSION_SECRET=tu_clave_secreta_muy_segura_2024
 
-# Security
+# JWT Configuration
 JWT_SECRET=tu_jwt_secret_muy_seguro_2024
