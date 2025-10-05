@@ -1,21 +1,14 @@
 # Copia este archivo como .env y configura tus valores reales
 
 # =============================================================================
-# CONFIGURACIÓN DE BASE DE DATOS
+# CONFIGURACIÓN DE BASE DE DATOS MySQL
 # =============================================================================
-# Elige el tipo de base de datos: 'sqlite' (local) o 'mysql' (nube)
-DB_TYPE=mysql
-
-# --- Configuración para MySQL (AlwaysData u otro hosting) ---
-# Obtén estos datos desde el panel de AlwaysData > Databases
-DB_HOST=mysql-tunombre.alwaysdata.net
+# Configuración para MySQL (AlwaysData)
+DB_HOST=mysql-funkotest.alwaysdata.net
 DB_PORT=3306
-DB_NAME=tunombre_elecciones
-DB_USER=tunombre
-DB_PASSWORD=tu_password_mysql
-
-# --- Configuración para SQLite (solo si DB_TYPE=sqlite) ---
-# DATABASE_PATH=./elecciones.db
+DB_NAME=funkotest_fiscalizar
+DB_USER=funkotest
+DB_PASSWORD=rootJonas
 
 # =============================================================================
 # CONFIGURACIÓN DE LA APLICACIÓN
@@ -27,7 +20,8 @@ PORT=3000
 # SEGURIDAD
 # =============================================================================
 # Session Configuration
-SESSION_SECRET=tu_clave_secreta_muy_segura_2024
+SESSION_SECRET=6853ad0a2dd3630e4ba775a61ab97b7cd64d536d3365314aac5642b683fb2b68
+SESSION_NAME=fiscalizacion_session
 
-# JWT Configuration
+# JWT Configuration (opcional, si se usa JWT)
 JWT_SECRET=tu_jwt_secret_muy_seguro_2024

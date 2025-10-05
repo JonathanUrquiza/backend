@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { exec, testConnection } = require('../config/database');
+const { sequelize, testConnection } = require('../config/database');
 const picocolors = require('picocolors');
 
 async function runMigrations() {
@@ -34,9 +34,12 @@ async function runMigrations() {
                 .join('\n')
                 .trim();
             
-            // Ejecutar todo el SQL de una sola vez
+            // Dividir por punto y coma para ejecutar múltiples statements
             if (sql.length > 0) {
-                await query(sql);
+                const statements = sql.split(';').filter(s => s.trim().length > 0);
+                for (const statement of statements) {
+                    await sequelize.query(statement.trim());
+                }
             }
             
             console.log(picocolors.green(`✅ Migración completada: ${file}`));
@@ -75,9 +78,12 @@ async function runSeeds() {
                 .join('\n')
                 .trim();
             
-            // Ejecutar todo el SQL de una sola vez
+            // Dividir por punto y coma para ejecutar múltiples statements
             if (sql.length > 0) {
-                await query(sql);
+                const statements = sql.split(';').filter(s => s.trim().length > 0);
+                for (const statement of statements) {
+                    await sequelize.query(statement.trim());
+                }
             }
             
             console.log(picocolors.green(`✅ Seed completado: ${file}`));

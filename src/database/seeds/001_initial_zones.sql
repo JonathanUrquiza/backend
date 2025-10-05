@@ -1,10 +1,10 @@
 -- ================================================
 -- DATOS INICIALES - ZONAS DEL SISTEMA
--- Sistema Monolito de Fiscalización - SQLite Version
+-- Sistema Monolito de Fiscalización - MySQL Version
 -- ================================================
 
 -- Insertar las 15 zonas del sistema
-INSERT OR IGNORE INTO zonas (numero_zona, nombre, descripcion) VALUES
+INSERT IGNORE INTO zonas (numero_zona, nombre, descripcion) VALUES
 (1, 'Zona 1', 'Primera zona electoral del distrito'),
 (2, 'Zona 2', 'Segunda zona electoral del distrito'),
 (3, 'Zona 3', 'Tercera zona electoral del distrito'),
@@ -22,7 +22,7 @@ INSERT OR IGNORE INTO zonas (numero_zona, nombre, descripcion) VALUES
 (15, 'Zona 15', 'Decimoquinta zona electoral del distrito');
 
 -- Insertar algunas instituciones de ejemplo
-INSERT OR IGNORE INTO instituciones (nombre, tipo, direccion, responsable) VALUES
+INSERT IGNORE INTO instituciones (nombre, tipo, direccion, responsable) VALUES
 ('Escuela Primaria N° 1', 'escuela', 'Av. Principal 123', 'Director Juan Pérez'),
 ('Instituto Secundario Central', 'colegio', 'Calle Secundaria 456', 'Directora María González'),
 ('Centro de Votación Municipal', 'centro_votacion', 'Plaza Central s/n', 'Coordinador Luis Rodríguez'),
@@ -30,7 +30,7 @@ INSERT OR IGNORE INTO instituciones (nombre, tipo, direccion, responsable) VALUE
 ('Universidad Regional', 'universidad', 'Campus Universitario 101', 'Rector Ana López');
 
 -- Asignar algunas instituciones a zonas (ejemplos)
-INSERT OR IGNORE INTO zona_instituciones (zona_id, institucion_id) VALUES
+INSERT IGNORE INTO zona_instituciones (zona_id, institucion_id) VALUES
 (1, 1), -- Escuela Primaria N° 1 en Zona 1
 (1, 3), -- Centro de Votación en Zona 1  
 (2, 2), -- Instituto Secundario en Zona 2
