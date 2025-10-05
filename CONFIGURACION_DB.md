@@ -27,3 +27,15 @@ SESSION_SECRET=tu_clave_secreta_muy_larga_y_segura_aqui
 - `npm run db:seed` - Ejecutar seeds
 - `npm run db:fresh` - Reiniciar base de datos con migraciones y seeds
 - `node src/database/test-connection.js` - Prueba detallada de conexión
+
+
+🔑 CONTRASEÑAS SIMPLES PARA PRUEBAS:
+Administradores:
+Email: jourquiza86@hotmail.com → Password: admin123
+Email: admin@sistema.com → Password: admin123
+Fiscal General:
+Email: fiscal.general@sistema.com → Password: general123
+Email: gonzalo.ernesto.viniegra@fiscales.com → Password: general123
+Fiscal de Zona:
+Email: fiscal.zona5@sistema.com → Password: zona123
+Email: jurquiza86@hotmail.com → Password: zona123

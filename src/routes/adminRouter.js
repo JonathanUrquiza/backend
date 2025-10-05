@@ -10,6 +10,8 @@ const {
     showCreateFiscal,
     showCreateFiscalGeneral,
     showCreateFiscalZona,
+    searchFiscal,
+    assignFiscalRole,
     processCreateFiscal,
     showExcelUpload,
     processExcelUpload,
@@ -42,10 +44,12 @@ router.post('/fiscales/change-password', requireAdminAuth, requireAdminRole(['su
 router.delete('/fiscales/delete', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), deleteFiscal);
 router.get('/fiscales/:id', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), getFiscalDetails);
 
-// Rutas para crear nuevos fiscales
+// Rutas para crear nuevos fiscales y asignar roles
 router.get('/create-fiscal', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), showCreateFiscal);
 router.get('/create-fiscal-general', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), showCreateFiscalGeneral);
 router.get('/create-fiscal-zona', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), showCreateFiscalZona);
+router.get('/search-fiscal', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), searchFiscal);
+router.post('/assign-fiscal-role', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), assignFiscalRole);
 router.post('/create-fiscal', requireAdminAuth, requireAdminRole(['super_admin', 'admin']), processCreateFiscal);
 
 // Rutas para carga de archivos Excel

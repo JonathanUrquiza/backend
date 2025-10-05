@@ -20,10 +20,36 @@ const showAdminLogin = (req, res) => {
 
 // Procesar login de administrador
 const processAdminLogin = async (req, res) => {
+    const timestamp = new Date().toISOString();
+    const { sequelize } = require('../config/database');
+    
     try {
         const { email, password } = req.body;
 
+        console.log('\n═══════════════════════════════════════════════════════');
+        console.log('🔐 INTENTO DE LOGIN - ADMINISTRADOR');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log(`⏰ Timestamp: ${timestamp}`);
+        console.log(`📧 Email: ${email || 'NO PROPORCIONADO'}`);
+        console.log(`🔑 Password: ${password ? '***' + '*'.repeat(password.length - 3) : 'NO PROPORCIONADO'}`);
+        console.log(`🌐 IP: ${req.ip || req.connection.remoteAddress}`);
+        
+        // Verificar estado de conexión a la base de datos
+        try {
+            await sequelize.authenticate();
+            console.log('✅ Estado BD: Conexión activa y funcionando');
+        } catch (dbError) {
+            console.log('❌ Estado BD: Error de conexión');
+            console.log(`   Error: ${dbError.message}`);
+            return res.status(503).json({
+                success: false,
+                message: 'Error de conexión con la base de datos'
+            });
+        }
+        console.log('═══════════════════════════════════════════════════════\n');
+
         if (!email || !password) {
+            console.log('❌ LOGIN FALLIDO - Administrador: Campos incompletos\n');
             return res.status(400).json({
                 success: false,
                 message: 'Email y contraseña son requeridos'
@@ -39,20 +65,29 @@ const processAdminLogin = async (req, res) => {
         });
 
         if (!admin) {
+            console.log(`❌ LOGIN FALLIDO - Administrador no encontrado: ${email}`);
+            console.log(`🔍 Credenciales: INVÁLIDAS (usuario no existe)\n`);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales incorrectas'
             });
         }
 
+        console.log(`🔍 Usuario encontrado en BD: ${admin.nombre} (ID: ${admin.id})`);
+        console.log(`🔍 Verificando credenciales...`);
+
         // Verificar contraseña hasheada
         const passwordMatch = await bcrypt.compare(password, admin.password);
         if (!passwordMatch) {
+            console.log(`❌ LOGIN FALLIDO - Contraseña incorrecta para: ${admin.nombre} (${admin.email})`);
+            console.log(`🔍 Credenciales: INVÁLIDAS (contraseña incorrecta)\n`);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales incorrectas'
             });
         }
+
+        console.log(`✅ Credenciales: VÁLIDAS`);
 
         // Actualizar último acceso
         await admin.update({
@@ -65,16 +100,39 @@ const processAdminLogin = async (req, res) => {
         req.session.adminNombre = admin.nombre;
         req.session.adminRol = admin.rol;
 
-        console.log(`🔐 Admin login exitoso: ${admin.nombre} (${admin.rol})`);
+        // Guardar la sesión antes de enviar la respuesta
+        req.session.save((err) => {
+            if (err) {
+                console.error('❌ Error guardando sesión:', err);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al guardar la sesión'
+                });
+            }
 
-        res.json({
-            success: true,
-            message: 'Login de administrador exitoso',
-            redirect: '/admin/dashboard'
+            console.log('✅ LOGIN EXITOSO - ADMINISTRADOR');
+            console.log(`👤 Nombre: ${admin.nombre}`);
+            console.log(`📧 Email: ${admin.email}`);
+            console.log(`🎭 Rol: ${admin.rol}`);
+            console.log(`🆔 ID: ${admin.id}`);
+            console.log(`💾 Sesión guardada correctamente`);
+            console.log(`⏰ Último acceso actualizado: ${new Date().toLocaleString('es-AR')}\n`);
+
+            res.json({
+                success: true,
+                message: 'Login de administrador exitoso',
+                redirect: '/admin/dashboard'
+            });
         });
 
     } catch (error) {
-        console.error('Error en login de administrador:', error);
+        console.error('═══════════════════════════════════════════════════════');
+        console.error('❌ ERROR EN LOGIN DE ADMINISTRADOR');
+        console.error('═══════════════════════════════════════════════════════');
+        console.error(`⏰ Timestamp: ${timestamp}`);
+        console.error(`❌ Error: ${error.message}`);
+        console.error(`📚 Stack: ${error.stack}`);
+        console.error('═══════════════════════════════════════════════════════\n');
         res.status(500).json({
             success: false,
             message: 'Error interno del servidor'
@@ -226,6 +284,104 @@ const showCreateFiscalZona = (req, res) => {
         },
         tipoFiscal: 'fiscal_zona'
     });
+};
+
+// Buscar fiscal por email (para asignar rol)
+const searchFiscal = async (req, res) => {
+    try {
+        const { email } = req.query;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email es requerido'
+            });
+        }
+
+        const fiscal = await Fiscal.findOne({
+            where: { email: email.trim().toLowerCase() },
+            attributes: ['id', 'nombre', 'email', 'tipo', 'zona', 'institucion']
+        });
+
+        if (!fiscal) {
+            return res.status(404).json({
+                success: false,
+                message: 'No se encontró ningún fiscal con ese email'
+            });
+        }
+
+        res.json({
+            success: true,
+            fiscal: {
+                id: fiscal.id,
+                nombre: fiscal.nombre,
+                email: fiscal.email,
+                tipo: fiscal.tipo || 'fiscal',
+                zona: fiscal.zona,
+                institucion: fiscal.institucion
+            }
+        });
+
+    } catch (error) {
+        console.error('Error al buscar fiscal:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor'
+        });
+    }
+};
+
+// Asignar rol a fiscal existente
+const assignFiscalRole = async (req, res) => {
+    try {
+        const { fiscalId, nuevoTipo } = req.body;
+
+        if (!fiscalId || !nuevoTipo) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID de fiscal y nuevo tipo son requeridos'
+            });
+        }
+
+        // Verificar que el tipo sea válido
+        if (!['fiscal', 'fiscal_general', 'fiscal_zona'].includes(nuevoTipo)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Tipo de fiscal inválido'
+            });
+        }
+
+        // Buscar el fiscal
+        const fiscal = await Fiscal.findByPk(fiscalId);
+
+        if (!fiscal) {
+            return res.status(404).json({
+                success: false,
+                message: 'Fiscal no encontrado'
+            });
+        }
+
+        const tipoAnterior = fiscal.tipo || 'fiscal';
+
+        // Actualizar el tipo
+        await fiscal.update({ tipo: nuevoTipo });
+
+        console.log(`✅ Admin ${req.session.adminNombre} cambió el rol de ${fiscal.nombre}:`);
+        console.log(`   De: ${tipoAnterior} → A: ${nuevoTipo}`);
+
+        res.json({
+            success: true,
+            message: `Rol actualizado exitosamente. ${fiscal.nombre} ahora es ${nuevoTipo.replace('_', ' ')}`,
+            redirect: '/admin/fiscales'
+        });
+
+    } catch (error) {
+        console.error('Error al asignar rol:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor al asignar el rol'
+        });
+    }
 };
 
 // Procesar creación de nuevo fiscal
@@ -511,6 +667,8 @@ module.exports = {
     showCreateFiscal,
     showCreateFiscalGeneral,
     showCreateFiscalZona,
+    searchFiscal,
+    assignFiscalRole,
     processCreateFiscal,
     showExcelUpload,
     processExcelUpload,

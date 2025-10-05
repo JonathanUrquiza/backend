@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const { testConnection } = require("./config/database");
 const upload = require("./middlewares/upload");
-require("dotenv").config();
+// Las variables de entorno se cargan con --env-file en el comando de inicio
 
 const port = process.env.PORT || 3000;
 
@@ -13,15 +13,20 @@ const port = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "view"));
 
-// Sesiones básicas
+// Sesiones mejoradas con configuración explícita
 app.use(session({
     secret: process.env.SESSION_SECRET || 'clave_secreta_basica',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Cambiado a true para que guarde la sesión aunque esté vacía inicialmente
+    name: 'fiscalizacion.sid', // Nombre personalizado de la cookie
     cookie: {
-        secure: false,
-        maxAge: 24 * 60 * 60 * 1000 // 24 horas
-    }
+        secure: false, // false para desarrollo (http), true para producción (https)
+        httpOnly: true, // Protección contra XSS
+        maxAge: 24 * 60 * 60 * 1000, // 24 horas
+        sameSite: 'lax', // Protección CSRF pero permite navegación normal
+        path: '/' // Asegurar que la cookie esté disponible en todas las rutas
+    },
+    rolling: true // Renovar la sesión en cada petición
 }));
 
 // Middleware básico

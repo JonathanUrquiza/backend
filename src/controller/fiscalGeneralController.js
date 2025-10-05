@@ -17,10 +17,36 @@ const showFiscalGeneralLogin = (req, res) => {
 
 // Procesar login de fiscal general
 const processFiscalGeneralLogin = async (req, res) => {
+    const timestamp = new Date().toISOString();
+    const { sequelize } = require('../config/database');
+    
     try {
         const { email, password } = req.body;
 
+        console.log('\n═══════════════════════════════════════════════════════');
+        console.log('🔐 INTENTO DE LOGIN - FISCAL GENERAL');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log(`⏰ Timestamp: ${timestamp}`);
+        console.log(`📧 Email: ${email || 'NO PROPORCIONADO'}`);
+        console.log(`🔑 Password: ${password ? '***' + '*'.repeat(password.length - 3) : 'NO PROPORCIONADO'}`);
+        console.log(`🌐 IP: ${req.ip || req.connection.remoteAddress}`);
+        
+        // Verificar estado de conexión a la base de datos
+        try {
+            await sequelize.authenticate();
+            console.log('✅ Estado BD: Conexión activa y funcionando');
+        } catch (dbError) {
+            console.log('❌ Estado BD: Error de conexión');
+            console.log(`   Error: ${dbError.message}`);
+            return res.status(503).json({
+                success: false,
+                message: 'Error de conexión con la base de datos'
+            });
+        }
+        console.log('═══════════════════════════════════════════════════════\n');
+
         if (!email || !password) {
+            console.log('❌ LOGIN FALLIDO - Fiscal General: Campos incompletos\n');
             return res.status(400).json({
                 success: false,
                 message: 'Email y contraseña son requeridos'
@@ -36,20 +62,30 @@ const processFiscalGeneralLogin = async (req, res) => {
         });
 
         if (!fiscalGeneral) {
+            console.log(`❌ LOGIN FALLIDO - Fiscal General no encontrado o sin permisos: ${email}`);
+            console.log(`🔍 Credenciales: INVÁLIDAS (usuario no existe o no es fiscal general)\n`);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales incorrectas o no tienes permisos de fiscal general'
             });
         }
 
+        console.log(`🔍 Usuario encontrado en BD: ${fiscalGeneral.nombre} (ID: ${fiscalGeneral.id})`);
+        console.log(`🔍 Tipo de usuario: ${fiscalGeneral.tipo}`);
+        console.log(`🔍 Verificando credenciales...`);
+
         // Verificar contraseña hasheada
         const passwordMatch = await bcrypt.compare(password, fiscalGeneral.password);
         if (!passwordMatch) {
+            console.log(`❌ LOGIN FALLIDO - Contraseña incorrecta para: ${fiscalGeneral.nombre} (${fiscalGeneral.email})`);
+            console.log(`🔍 Credenciales: INVÁLIDAS (contraseña incorrecta)\n`);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales incorrectas'
             });
         }
+
+        console.log(`✅ Credenciales: VÁLIDAS`);
 
         // Crear sesión de fiscal general
         req.session.fiscalGeneralId = fiscalGeneral.id;
@@ -59,16 +95,40 @@ const processFiscalGeneralLogin = async (req, res) => {
         req.session.fiscalGeneralZona = fiscalGeneral.zona;
         req.session.fiscalGeneralInstitucion = fiscalGeneral.institucion;
 
-        console.log(`⭐ Fiscal general login exitoso: ${fiscalGeneral.nombre} (${fiscalGeneral.institucion})`);
+        // Guardar la sesión antes de enviar la respuesta
+        req.session.save((err) => {
+            if (err) {
+                console.error('❌ Error guardando sesión:', err);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al guardar la sesión'
+                });
+            }
 
-        res.json({
-            success: true,
-            message: 'Login de fiscal general exitoso',
-            redirect: '/fiscal-general/dashboard'
+            console.log('✅ LOGIN EXITOSO - FISCAL GENERAL');
+            console.log(`👤 Nombre: ${fiscalGeneral.nombre}`);
+            console.log(`📧 Email: ${fiscalGeneral.email}`);
+            console.log(`🏛️ Institución: ${fiscalGeneral.institucion || 'Sin asignar'}`);
+            console.log(`📍 Zona: ${fiscalGeneral.zona || 'Sin asignar'}`);
+            console.log(`🆔 ID: ${fiscalGeneral.id}`);
+            console.log(`⭐ Tipo: FISCAL GENERAL`);
+            console.log(`💾 Sesión guardada correctamente\n`);
+
+            res.json({
+                success: true,
+                message: 'Login de fiscal general exitoso',
+                redirect: '/fiscal-general/dashboard'
+            });
         });
 
     } catch (error) {
-        console.error('Error en login de fiscal general:', error);
+        console.error('═══════════════════════════════════════════════════════');
+        console.error('❌ ERROR EN LOGIN DE FISCAL GENERAL');
+        console.error('═══════════════════════════════════════════════════════');
+        console.error(`⏰ Timestamp: ${timestamp}`);
+        console.error(`❌ Error: ${error.message}`);
+        console.error(`📚 Stack: ${error.stack}`);
+        console.error('═══════════════════════════════════════════════════════\n');
         res.status(500).json({
             success: false,
             message: 'Error interno del servidor'

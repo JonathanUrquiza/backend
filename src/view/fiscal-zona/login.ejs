@@ -5,15 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= view.title %></title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 50%, #8e44ad 100%);
             min-height: 100vh;
+        }
+        
+        .login-wrapper {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .fiscal-zona-login-container {
@@ -260,7 +274,10 @@
     </style>
 </head>
 <body>
-    <div class="fiscal-zona-login-container">
+    <%- include('../components/navbar', { currentPage: 'fiscal-zona-login', session: {} }) %>
+    
+    <div class="login-wrapper">
+        <div class="fiscal-zona-login-container">
         <div class="security-badge">ZONA</div>
         
         <div class="fiscal-zona-header">
@@ -298,6 +315,7 @@
             <a href="/login">¿Eres fiscal regular? Acceder aquí</a>
             <a href="/admin/login">¿Eres administrador? Panel Admin</a>
             <a href="/">← Volver al Inicio</a>
+        </div>
         </div>
     </div>
 

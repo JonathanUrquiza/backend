@@ -5,15 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= view.title %></title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
             min-height: 100vh;
+        }
+        
+        .login-wrapper {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .admin-login-container {
@@ -258,7 +272,10 @@
     </style>
 </head>
 <body>
-    <div class="admin-login-container">
+    <%- include('../components/navbar', { currentPage: 'admin-login', session: {} }) %>
+    
+    <div class="login-wrapper">
+        <div class="admin-login-container">
         <div class="security-badge">ADMIN</div>
         
         <div class="admin-header">
@@ -296,6 +313,7 @@
             <p>¿Eres un fiscal? <a href="/login">Acceder como Fiscal</a></p>
             <p style="margin-top: 15px;"><a href="/">← Volver al Inicio</a></p>
         </div>
+        </div>
     </div>
 
     <script>
@@ -332,8 +350,7 @@
 
             // Mostrar loading
             adminLoginBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-            adminLoginBtn.innerHTML = '<span class="spinner"></span>Verificando acceso...';
+            adminLoginBtn.textContent = 'Verificando acceso...';
 
             try {
                 const response = await fetch('/admin/login', {
@@ -358,8 +375,7 @@
             } finally {
                 // Ocultar loading
                 adminLoginBtn.disabled = false;
-                spinner.style.display = 'none';
-                adminLoginBtn.innerHTML = 'Acceder al Sistema';
+                adminLoginBtn.textContent = 'Acceder al Sistema';
             }
         });
 

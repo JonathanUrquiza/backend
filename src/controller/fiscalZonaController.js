@@ -17,10 +17,36 @@ const showFiscalZonaLogin = (req, res) => {
 
 // Procesar login de fiscal de zona
 const processFiscalZonaLogin = async (req, res) => {
+    const timestamp = new Date().toISOString();
+    const { sequelize } = require('../config/database');
+    
     try {
         const { email, password } = req.body;
 
+        console.log('\n═══════════════════════════════════════════════════════');
+        console.log('🔐 INTENTO DE LOGIN - FISCAL DE ZONA');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log(`⏰ Timestamp: ${timestamp}`);
+        console.log(`📧 Email: ${email || 'NO PROPORCIONADO'}`);
+        console.log(`🔑 Password: ${password ? '***' + '*'.repeat(password.length - 3) : 'NO PROPORCIONADO'}`);
+        console.log(`🌐 IP: ${req.ip || req.connection.remoteAddress}`);
+        
+        // Verificar estado de conexión a la base de datos
+        try {
+            await sequelize.authenticate();
+            console.log('✅ Estado BD: Conexión activa y funcionando');
+        } catch (dbError) {
+            console.log('❌ Estado BD: Error de conexión');
+            console.log(`   Error: ${dbError.message}`);
+            return res.status(503).json({
+                success: false,
+                message: 'Error de conexión con la base de datos'
+            });
+        }
+        console.log('═══════════════════════════════════════════════════════\n');
+
         if (!email || !password) {
+            console.log('❌ LOGIN FALLIDO - Fiscal de Zona: Campos incompletos\n');
             return res.status(400).json({
                 success: false,
                 message: 'Email y contraseña son requeridos'
@@ -36,20 +62,30 @@ const processFiscalZonaLogin = async (req, res) => {
         });
 
         if (!fiscalZona) {
+            console.log(`❌ LOGIN FALLIDO - Fiscal de Zona no encontrado o sin permisos: ${email}`);
+            console.log(`🔍 Credenciales: INVÁLIDAS (usuario no existe o no es fiscal de zona)\n`);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales incorrectas o no tienes permisos de fiscal de zona'
             });
         }
 
+        console.log(`🔍 Usuario encontrado en BD: ${fiscalZona.nombre} (ID: ${fiscalZona.id})`);
+        console.log(`🔍 Tipo de usuario: ${fiscalZona.tipo}`);
+        console.log(`🔍 Verificando credenciales...`);
+
         // Verificar contraseña hasheada
         const passwordMatch = await bcrypt.compare(password, fiscalZona.password);
         if (!passwordMatch) {
+            console.log(`❌ LOGIN FALLIDO - Contraseña incorrecta para: ${fiscalZona.nombre} (${fiscalZona.email})`);
+            console.log(`🔍 Credenciales: INVÁLIDAS (contraseña incorrecta)\n`);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales incorrectas'
             });
         }
+
+        console.log(`✅ Credenciales: VÁLIDAS`);
 
         // Crear sesión de fiscal de zona
         req.session.fiscalZonaId = fiscalZona.id;
@@ -58,16 +94,39 @@ const processFiscalZonaLogin = async (req, res) => {
         req.session.fiscalZonaTipo = fiscalZona.tipo;
         req.session.fiscalZonaZona = fiscalZona.zona;
 
-        console.log(`🏛️ Fiscal de zona login exitoso: ${fiscalZona.nombre} (Zona ${fiscalZona.zona})`);
+        // Guardar la sesión antes de enviar la respuesta
+        req.session.save((err) => {
+            if (err) {
+                console.error('❌ Error guardando sesión:', err);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Error al guardar la sesión'
+                });
+            }
 
-        res.json({
-            success: true,
-            message: 'Login de fiscal de zona exitoso',
-            redirect: '/fiscal-zona/dashboard'
+            console.log('✅ LOGIN EXITOSO - FISCAL DE ZONA');
+            console.log(`👤 Nombre: ${fiscalZona.nombre}`);
+            console.log(`📧 Email: ${fiscalZona.email}`);
+            console.log(`📍 Zona: ${fiscalZona.zona || 'Sin asignar'}`);
+            console.log(`🆔 ID: ${fiscalZona.id}`);
+            console.log(`🏛️ Tipo: FISCAL DE ZONA`);
+            console.log(`💾 Sesión guardada correctamente\n`);
+
+            res.json({
+                success: true,
+                message: 'Login de fiscal de zona exitoso',
+                redirect: '/fiscal-zona/dashboard'
+            });
         });
 
     } catch (error) {
-        console.error('Error en login de fiscal de zona:', error);
+        console.error('═══════════════════════════════════════════════════════');
+        console.error('❌ ERROR EN LOGIN DE FISCAL DE ZONA');
+        console.error('═══════════════════════════════════════════════════════');
+        console.error(`⏰ Timestamp: ${timestamp}`);
+        console.error(`❌ Error: ${error.message}`);
+        console.error(`📚 Stack: ${error.stack}`);
+        console.error('═══════════════════════════════════════════════════════\n');
         res.status(500).json({
             success: false,
             message: 'Error interno del servidor'

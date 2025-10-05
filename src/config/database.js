@@ -1,7 +1,6 @@
 // Configuración de Sequelize para MySQL
 const { Sequelize } = require('sequelize');
-// Cargar las variables de entorno desde el archivo .env
-require('dotenv').config();
+// Las variables de entorno se cargan con --env-file en el comando de inicio
 const pc = require('picocolors');
 
 // Configuración para MySQL (AlwaysData)
