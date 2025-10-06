@@ -5,13 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const { testConnection } = require("./config/database");
 const upload = require("./middlewares/upload");
-
-// Cargar variables de entorno
-// En desarrollo local usa --env-file .env
-// En Heroku las variables se configuran en el dashboard
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
+// Las variables de entorno se cargan con --env-file en el comando de inicio
 
 const port = process.env.PORT || 3000;
 
