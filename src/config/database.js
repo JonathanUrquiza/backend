@@ -7,7 +7,7 @@ require('dotenv').config();
 const pc = require('picocolors');
 
 // Configurar la ruta para la base de datos SQLite
-const DATABASE_FILE = process.env.DATABASE_PATH || 'C:\\Users\\Voolkia\\Documents\\monolito\\elecciones.db';
+const DATABASE_FILE = process.env.DATABASE_PATH || './elecciones.db';
 
 // El archivo de base de datos se creará automáticamente cuando se conecte por primera vez
 
